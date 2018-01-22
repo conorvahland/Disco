@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Disco.Models.Services.Documents;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Disco.Models.UI.Config.DocumentTemplate
 {
     public interface ConfigDocumentTemplateIndexModel : BaseUIModel
     {
-        List<Disco.Models.Repository.DocumentTemplate> DocumentTemplates { get; set; }
+        Dictionary<Repository.DocumentTemplate, int> DocumentTemplates { get; set; }
+
+        List<DocumentTemplatePackage> Packages { get; set; }
     }
 }

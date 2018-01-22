@@ -77,6 +77,7 @@
     <Compile Include="Configuration\ConfigurationCache.cs" />
     <Compile Include="Configuration\Modules\ActiveDirectoryConfiguration.cs" />
     <Compile Include="Configuration\Modules\DevicesConfiguration.cs" />
+    <Compile Include="Configuration\Modules\DocumentsConfiguration.cs" />
     <Compile Include="Configuration\Modules\JobPreferencesConfiguration.cs" />
     <Compile Include="Configuration\SystemConfiguration.cs" />
     <Compile Include="Configuration\Modules\BootstrapperConfiguration.cs" />
@@ -150,6 +151,18 @@
     <Compile Include="Migrations\201407260624238_DBv16.Designer.cs">
       <DependentUpon>201407260624238_DBv16.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609260741183_DBv17.cs" />
+    <Compile Include="Migrations\201609260741183_DBv17.Designer.cs">
+      <DependentUpon>201609260741183_DBv17.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611090729100_DBv18.cs" />
+    <Compile Include="Migrations\201611090729100_DBv18.Designer.cs">
+      <DependentUpon>201611090729100_DBv18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611100557315_DBv19.cs" />
+    <Compile Include="Migrations\201611100557315_DBv19.Designer.cs">
+      <DependentUpon>201611100557315_DBv19.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\DiscoDataMigrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -212,6 +225,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201407260624238_DBv16.resx">
       <DependentUpon>201407260624238_DBv16.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609260741183_DBv17.resx">
+      <DependentUpon>201609260741183_DBv17.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611090729100_DBv18.resx">
+      <DependentUpon>201611090729100_DBv18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611100557315_DBv19.resx">
+      <DependentUpon>201611100557315_DBv19.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

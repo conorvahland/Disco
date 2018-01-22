@@ -1,12 +1,10 @@
 ﻿using Disco.Models.Repository;
+using Disco.Services;
 using Disco.Services.Authorization;
 using Disco.Services.Jobs.JobQueues;
-using Disco.BI.Extensions;
 using Disco.Services.Web;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Disco.Web.Areas.API.Controllers
@@ -221,7 +219,7 @@ namespace Disco.Web.Areas.API.Controllers
 
             if (CloseJob.HasValue && CloseJob.Value && job.CanCloseNormally())
             {
-                job.OnCloseNormally(CurrentUser);
+                job.OnCloseNormally(Database, Database.Users.Find(CurrentUser.UserId));
                 Database.SaveChanges();
             }
 

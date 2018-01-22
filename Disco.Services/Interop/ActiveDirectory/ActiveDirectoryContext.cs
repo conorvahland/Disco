@@ -38,7 +38,7 @@ namespace Disco.Services.Interop.ActiveDirectory
             }
         }
 
-        #region Contructor/Initializing
+        #region Constructor/Initializing
 
         private ActiveDirectoryContext()
         {
@@ -54,6 +54,9 @@ namespace Disco.Services.Interop.ActiveDirectory
         {
             // Search Entire Forest (default: true)
             this._SearchAllForestServers = Database.DiscoConfiguration.ActiveDirectory.SearchAllForestServers ?? true;
+
+            // Set Search LDAP Filters
+            InitializeWildcardSearchSufixOnly(Database.DiscoConfiguration.ActiveDirectory.SearchWildcardSuffixOnly);
 
             // Determine Site
             var computerSite = ActiveDirectorySite.GetComputerSite();
@@ -227,6 +230,26 @@ namespace Disco.Services.Interop.ActiveDirectory
         #endregion
 
         #region Configuration
+
+        public void UpdateWildcardSearchSuffixOnly(DiscoDataContext Database, bool SearchWildcardSuffixOnly)
+        {
+            Database.DiscoConfiguration.ActiveDirectory.SearchWildcardSuffixOnly = SearchWildcardSuffixOnly;
+            InitializeWildcardSearchSufixOnly(SearchWildcardSuffixOnly);
+        }
+
+        private void InitializeWildcardSearchSufixOnly(bool SearchWildcardSuffixOnly)
+        {
+            if (SearchWildcardSuffixOnly)
+            {
+                ADGroup.LdapSearchFilterTemplate = "(&(objectCategory=Group)(|(sAMAccountName={0}*)(name={0}*)(cn={0}*)))";
+                ADUserAccount.LdapSearchFilterTemplate = "(&(objectCategory=Person)(objectClass=user)(|(sAMAccountName={0}*)(displayName={0}*)(sn={0}*)(givenName={0}*)))";
+            }
+            else
+            {
+                ADGroup.LdapSearchFilterTemplate = "(&(objectCategory=Group)(|(sAMAccountName=*{0}*)(name=*{0}*)(cn=*{0}*)))";
+                ADUserAccount.LdapSearchFilterTemplate = "(&(objectCategory=Person)(objectClass=user)(|(sAMAccountName=*{0}*)(displayName=*{0}*)(sn=*{0}*)(givenName=*{0}*)))";
+            }
+        }
 
         public bool UpdateSearchAllForestServers(DiscoDataContext Database, bool SearchAllForestServers)
         {

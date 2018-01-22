@@ -110,7 +110,7 @@ namespace Disco.Services.Devices.Exporting
         }
         public static DeviceExportResult GenerateExport(DiscoDataContext Database, IQueryable<Device> Devices, DeviceExportOptions Options)
         {
-            return GenerateExport(Database, Devices, Options, ScheduledTaskMockStatus.Create());
+            return GenerateExport(Database, Devices, Options, ScheduledTaskMockStatus.Create("Device Export"));
         }
 
         public static DeviceExportResult GenerateExport(DiscoDataContext Database, DeviceExportOptions Options, IScheduledTaskStatus TaskStatus)
@@ -134,7 +134,7 @@ namespace Disco.Services.Devices.Exporting
         }
         public static DeviceExportResult GenerateExport(DiscoDataContext Database, DeviceExportOptions Options)
         {
-            return GenerateExport(Database, Options, ScheduledTaskMockStatus.Create());
+            return GenerateExport(Database, Options, ScheduledTaskMockStatus.Create("Device Export"));
         }
 
         private static IEnumerable<DeviceExportRecord> BuildRecords(IQueryable<Device> Devices)
@@ -143,7 +143,8 @@ namespace Disco.Services.Devices.Exporting
                 DeviceDetail.HardwareKeyLanMacAddress,
                 DeviceDetail.HardwareKeyWLanMacAddress,
                 DeviceDetail.HardwareKeyACAdapter,
-                DeviceDetail.HardwareKeyBattery
+                DeviceDetail.HardwareKeyBattery,
+                DeviceDetail.HardwareKeyKeyboard
             };
 
             return Devices.Select(d => new DeviceExportRecord()
@@ -225,6 +226,7 @@ namespace Disco.Services.Devices.Exporting
             yield return new Tuple<string, Func<DeviceExportRecord, string>, bool>("DetailWLanMacAddress", r => r.DeviceDetails.Where(dd => dd.Key == DeviceDetail.HardwareKeyWLanMacAddress).Select(dd => dd.Value).FirstOrDefault(), true);
             yield return new Tuple<string, Func<DeviceExportRecord, string>, bool>("DetailACAdapter", r => r.DeviceDetails.Where(dd => dd.Key == DeviceDetail.HardwareKeyACAdapter).Select(dd => dd.Value).FirstOrDefault(), true);
             yield return new Tuple<string, Func<DeviceExportRecord, string>, bool>("DetailBattery", r => r.DeviceDetails.Where(dd => dd.Key == DeviceDetail.HardwareKeyBattery).Select(dd => dd.Value).FirstOrDefault(), true);
+            yield return new Tuple<string, Func<DeviceExportRecord, string>, bool>("DetailKeyboard", r => r.DeviceDetails.Where(dd => dd.Key == DeviceDetail.HardwareKeyKeyboard).Select(dd => dd.Value).FirstOrDefault(), true);
 
             // Model
             yield return new Tuple<string, Func<DeviceExportRecord, string>, bool>("ModelId", r => r.ModelId.HasValue ? r.ModelId.Value.ToString() : null, false);

@@ -1,9 +1,14 @@
 ﻿using Disco.BI.Extensions;
 using Disco.Models.Repository;
+using Disco.Models.Services.Documents;
+using Disco.Models.Services.Job;
 using Disco.Models.Services.Jobs.JobLists;
 using Disco.Services;
 using Disco.Services.Authorization;
+using Disco.Services.Documents;
+using Disco.Services.Interop;
 using Disco.Services.Jobs.JobLists;
+using Disco.Services.Jobs.Statistics;
 using Disco.Services.Users;
 using Disco.Services.Web;
 using Disco.Web.Extensions;
@@ -526,7 +531,7 @@ namespace Disco.Web.Areas.API.Controllers
         private void UpdateDeviceHeldLocation(Job job, string DeviceHeldLocation)
         {
             if (!string.IsNullOrWhiteSpace(DeviceHeldLocation) &&
-                Database.DiscoConfiguration.JobPreferences.LocationMode == Disco.Models.BI.Job.LocationModes.RestrictedList)
+                Database.DiscoConfiguration.JobPreferences.LocationMode == LocationModes.RestrictedList)
             {
                 // Enforce Restricted List Mode
                 var value = DeviceHeldLocation.Trim();
@@ -1680,7 +1685,7 @@ namespace Disco.Web.Areas.API.Controllers
             {
                 if (j.CanCloseForced())
                 {
-                    j.OnCloseForced(Database, CurrentUser, Reason);
+                    j.OnCloseForced(Database, Database.Users.Find(CurrentUser.UserId), Reason);
 
                     Database.SaveChanges();
                     if (redirect.HasValue && redirect.Value)
@@ -1705,7 +1710,7 @@ namespace Disco.Web.Areas.API.Controllers
             {
                 if (j.CanCloseNormally())
                 {
-                    j.OnCloseNormally(CurrentUser);
+                    j.OnCloseNormally(Database, Database.Users.Find(CurrentUser.UserId));
 
                     Database.SaveChanges();
                     if (redirect)
@@ -1920,9 +1925,9 @@ namespace Disco.Web.Areas.API.Controllers
                     {
                         var contentType = file.ContentType;
                         if (string.IsNullOrEmpty(contentType) || contentType.Equals("unknown/unknown", StringComparison.OrdinalIgnoreCase))
-                            contentType = BI.Interop.MimeTypes.ResolveMimeType(file.FileName);
+                            contentType = MimeTypes.ResolveMimeType(file.FileName);
 
-                        var ja = new Disco.Models.Repository.JobAttachment()
+                        var ja = new JobAttachment()
                         {
                             JobId = j.Id,
                             TechUserId = CurrentUser.UserId,
@@ -2074,7 +2079,7 @@ namespace Disco.Web.Areas.API.Controllers
         [DiscoAuthorize(Claims.Job.Show)]
         public virtual ActionResult StatisticsDailyOpenedClosed()
         {
-            var result = BI.JobBI.Statistics.DailyOpenedClosed.Data(Database, true);
+            var result = DailyOpenedClosed.Data(Database, true);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -2082,13 +2087,13 @@ namespace Disco.Web.Areas.API.Controllers
         #endregion
 
         [DiscoAuthorize(Claims.Job.Actions.GenerateDocuments)]
-        public virtual ActionResult GeneratePdf(string id, string DocumentTemplateId)
+        public virtual ActionResult GeneratePdf(int id, string DocumentTemplateId)
         {
-            if (string.IsNullOrEmpty(id))
-                throw new ArgumentNullException("id");
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(id));
             if (string.IsNullOrEmpty(DocumentTemplateId))
-                throw new ArgumentNullException("AttachmentTypeId");
-            var job = Database.Jobs.Find(int.Parse(id));
+                throw new ArgumentNullException(nameof(DocumentTemplateId));
+            var job = Database.Jobs.Find(id);
             if (job != null)
             {
                 var documentTemplate = Database.DocumentTemplates.Find(DocumentTemplateId);
@@ -2096,7 +2101,7 @@ namespace Disco.Web.Areas.API.Controllers
                 {
                     var timeStamp = DateTime.Now;
                     Stream pdf;
-                    using (var generationState = Disco.Models.BI.DocumentTemplates.DocumentState.DefaultState())
+                    using (var generationState = DocumentState.DefaultState())
                     {
                         pdf = documentTemplate.GeneratePdf(Database, job, CurrentUser, timeStamp, generationState);
                     }
@@ -2114,6 +2119,44 @@ namespace Disco.Web.Areas.API.Controllers
             }
         }
 
+        [DiscoAuthorize(Claims.Job.Actions.GenerateDocuments)]
+        public virtual ActionResult GeneratePdfPackage(int id, string DocumentTemplatePackageId)
+        {
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(id));
+            if (string.IsNullOrEmpty(DocumentTemplatePackageId))
+                throw new ArgumentNullException(nameof(DocumentTemplatePackageId));
+
+            var job = Database.Jobs.Find(id);
+
+            if (job != null)
+            {
+                var package = DocumentTemplatePackages.GetPackage(DocumentTemplatePackageId);
+                if (package != null)
+                {
+                    if (package.Scope != AttachmentTypes.Job)
+                        throw new ArgumentException("This package cannot be generated from the Job Scope", nameof(DocumentTemplatePackageId));
+
+                    var timeStamp = DateTime.Now;
+                    Stream pdf;
+                    using (var generationState = DocumentState.DefaultState())
+                    {
+                        pdf = package.GeneratePdfPackage(Database, job, UserService.CurrentUser, timeStamp, generationState);
+                    }
+                    Database.SaveChanges();
+                    return File(pdf, "application/pdf", string.Format("{0}_{1}_{2:yyyyMMdd-HHmmss}.pdf", package.Id, job.Id, timeStamp));
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid Document Template Package Id", nameof(DocumentTemplatePackageId));
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Invalid Job Id", nameof(id));
+            }
+        }
+
         [DiscoAuthorize(Claims.Job.Properties.DeviceHeldLocation)]
         public virtual ActionResult DeviceHeldLocations()
         {
@@ -2121,12 +2164,12 @@ namespace Disco.Web.Areas.API.Controllers
 
             switch (Database.DiscoConfiguration.JobPreferences.LocationMode)
             {
-                case Disco.Models.BI.Job.LocationModes.Unrestricted:
+                case LocationModes.Unrestricted:
                     var jobDateThreshold = DateTime.Now.AddYears(-1);
                     locations = Database.Jobs.Where(j => (j.OpenedDate > jobDateThreshold || !j.ClosedDate.HasValue) && j.DeviceHeldLocation != null).Select(j => j.DeviceHeldLocation).Distinct().OrderBy(l => l).ToList().Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(l => l).ToList();
                     break;
-                case Disco.Models.BI.Job.LocationModes.OptionalList:
-                case Disco.Models.BI.Job.LocationModes.RestrictedList:
+                case LocationModes.OptionalList:
+                case LocationModes.RestrictedList:
                     locations = Database.DiscoConfiguration.JobPreferences.LocationList;
                     break;
                 default:

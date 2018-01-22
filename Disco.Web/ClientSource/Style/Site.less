@@ -257,6 +257,15 @@ header, #header {
     a {
         text-decoration: none;
     }
+
+    & > a.button {
+        position: absolute;
+        right: 30px;
+        bottom: 8px;
+        font-size: 0.5em;
+        line-height: 1em;
+        text-align: right;
+    }
 }
 
 #layout_Page {
@@ -969,7 +978,7 @@ input[type="submit"], button {
     }
 }
 
-ul.none {
+ul.none, ol.none {
     list-style: none;
     margin: 0;
     padding: 0;

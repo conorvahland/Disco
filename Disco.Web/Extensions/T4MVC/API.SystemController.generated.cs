@@ -95,6 +95,12 @@ namespace Disco.Web.Areas.API.Controllers
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult UpdateActiveDirectorySearchWildcardSuffixOnly()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateActiveDirectorySearchWildcardSuffixOnly);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public virtual System.Web.Mvc.ActionResult SearchSubjects()
         {
             return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.SearchSubjects);
@@ -141,6 +147,7 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public readonly string UpdateLastNetworkLogonDates = "UpdateLastNetworkLogonDates";
             public readonly string UpdateAttachmentThumbnails = "UpdateAttachmentThumbnails";
+            public readonly string UpdateADDeviceDescriptions = "UpdateADDeviceDescriptions";
             public readonly string UpdateCheck = "UpdateCheck";
             public readonly string UpdateOrganisationName = "UpdateOrganisationName";
             public readonly string OrganisationLogo = "OrganisationLogo";
@@ -149,6 +156,7 @@ namespace Disco.Web.Areas.API.Controllers
             public readonly string UpdateMultiSiteMode = "UpdateMultiSiteMode";
             public readonly string UpdateActiveDirectorySearchScope = "UpdateActiveDirectorySearchScope";
             public readonly string UpdateActiveDirectorySearchAllForestServers = "UpdateActiveDirectorySearchAllForestServers";
+            public readonly string UpdateActiveDirectorySearchWildcardSuffixOnly = "UpdateActiveDirectorySearchWildcardSuffixOnly";
             public readonly string DomainOrganisationalUnits = "DomainOrganisationalUnits";
             public readonly string SearchSubjects = "SearchSubjects";
             public readonly string SearchGroupSubjects = "SearchGroupSubjects";
@@ -162,6 +170,7 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public const string UpdateLastNetworkLogonDates = "UpdateLastNetworkLogonDates";
             public const string UpdateAttachmentThumbnails = "UpdateAttachmentThumbnails";
+            public const string UpdateADDeviceDescriptions = "UpdateADDeviceDescriptions";
             public const string UpdateCheck = "UpdateCheck";
             public const string UpdateOrganisationName = "UpdateOrganisationName";
             public const string OrganisationLogo = "OrganisationLogo";
@@ -170,6 +179,7 @@ namespace Disco.Web.Areas.API.Controllers
             public const string UpdateMultiSiteMode = "UpdateMultiSiteMode";
             public const string UpdateActiveDirectorySearchScope = "UpdateActiveDirectorySearchScope";
             public const string UpdateActiveDirectorySearchAllForestServers = "UpdateActiveDirectorySearchAllForestServers";
+            public const string UpdateActiveDirectorySearchWildcardSuffixOnly = "UpdateActiveDirectorySearchWildcardSuffixOnly";
             public const string DomainOrganisationalUnits = "DomainOrganisationalUnits";
             public const string SearchSubjects = "SearchSubjects";
             public const string SearchGroupSubjects = "SearchGroupSubjects";
@@ -244,6 +254,15 @@ namespace Disco.Web.Areas.API.Controllers
         public class ActionParamsClass_UpdateActiveDirectorySearchAllForestServers
         {
             public readonly string SearchAllForestServers = "SearchAllForestServers";
+            public readonly string redirect = "redirect";
+        }
+        static readonly ActionParamsClass_UpdateActiveDirectorySearchWildcardSuffixOnly s_params_UpdateActiveDirectorySearchWildcardSuffixOnly = new ActionParamsClass_UpdateActiveDirectorySearchWildcardSuffixOnly();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_UpdateActiveDirectorySearchWildcardSuffixOnly UpdateActiveDirectorySearchWildcardSuffixOnlyParams { get { return s_params_UpdateActiveDirectorySearchWildcardSuffixOnly; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_UpdateActiveDirectorySearchWildcardSuffixOnly
+        {
+            public readonly string SearchWildcardSuffixOnly = "SearchWildcardSuffixOnly";
             public readonly string redirect = "redirect";
         }
         static readonly ActionParamsClass_SearchSubjects s_params_SearchSubjects = new ActionParamsClass_SearchSubjects();
@@ -329,6 +348,17 @@ namespace Disco.Web.Areas.API.Controllers
         {
             var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateAttachmentThumbnails);
             UpdateAttachmentThumbnailsOverride(callInfo);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void UpdateADDeviceDescriptionsOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult UpdateADDeviceDescriptions()
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateADDeviceDescriptions);
+            UpdateADDeviceDescriptionsOverride(callInfo);
             return callInfo;
         }
 
@@ -446,6 +476,19 @@ namespace Disco.Web.Areas.API.Controllers
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "SearchAllForestServers", SearchAllForestServers);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
             UpdateActiveDirectorySearchAllForestServersOverride(callInfo, SearchAllForestServers, redirect);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void UpdateActiveDirectorySearchWildcardSuffixOnlyOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, bool SearchWildcardSuffixOnly, bool redirect);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult UpdateActiveDirectorySearchWildcardSuffixOnly(bool SearchWildcardSuffixOnly, bool redirect)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateActiveDirectorySearchWildcardSuffixOnly);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "SearchWildcardSuffixOnly", SearchWildcardSuffixOnly);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
+            UpdateActiveDirectorySearchWildcardSuffixOnlyOverride(callInfo, SearchWildcardSuffixOnly, redirect);
             return callInfo;
         }
 

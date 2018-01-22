@@ -3,39 +3,109 @@
     Authorization.Require(Claims.Config.DocumentTemplate.Show);
 
     ViewBag.Title = Html.ToBreadcrumb("Configuration", MVC.Config.Config.Index(), "Document Templates");
+    var showTags = Model.DocumentTemplates.Keys.Any(i => i.IsHidden || i.DevicesLinkedGroup != null || i.UsersLinkedGroup != null ||
+        i.FilterExpression != null || i.OnGenerateExpression != null || i.OnImportAttachmentExpression != null) ||
+        Model.Packages.Any(i => i.IsHidden || i.FilterExpression != null || i.OnGenerateExpression != null);
 }
 @if (Model.DocumentTemplates.Count == 0)
 {
     <div class="form" style="width: 450px; padding: 100px 0;">
         <h2>No document templates are configured</h2>
-    </div>  
+    </div>
 }
 else
 {
-    <table class="tableData">
+    if (Model.DocumentTemplates.Keys.Any(dt => dt.IsHidden) || Model.Packages.Any(p => p.IsHidden))
+    {
+        <a id="Config_DocumentTemplates_ShowHidden" href="#" class="button small">Show Hidden (@(Model.DocumentTemplates.Keys.Count(dt => dt.IsHidden) + Model.Packages.Count(p => p.IsHidden)))</a>
+        <script>
+            $(function () {
+                $('#Config_DocumentTemplates_ShowHidden').click(function () {
+                    $(this).remove();
+                    $('#Config_DocumentTemplates_List').find('tr.hidden').show();
+                    $('#Config_DocumentTemplatePackages_List').find('tr.hidden').show();
+                    return false;
+                }).detach().appendTo('#layout_PageHeading');
+            })
+        </script>
+    }
+    <table id="Config_DocumentTemplates_List" class="tableData">
         <tr>
-            <th>Id
-            </th>
-            <th>Description
-            </th>
-            <th>Scope
-            </th>
+            <th>Id</th>
+            <th>Description</th>
+            <th>Scope</th>
+            <th>Stored&nbsp;Instances</th>
+            @if (showTags)
+                {
+                <th>&nbsp;</th>
+            }
         </tr>
-        @foreach (var item in Model.DocumentTemplates)
+        @foreach (var pair in Model.DocumentTemplates)
         {
-            <tr>
-                <td>
-                    @Html.ActionLink(item.Id.ToString(), MVC.Config.DocumentTemplate.Index(item.Id))
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Scope)
-                </td>
+            var item = pair.Key;
+            var storedCount = pair.Value;
+            <tr class="@(item.IsHidden ? "hidden" : null)">
+                <td>@Html.ActionLink(item.Id.ToString(), MVC.Config.DocumentTemplate.Index(item.Id))</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.Scope)</td>
+                <td>@storedCount.ToString("N0")</td>
+                @if (showTags)
+                    {
+                    <td>
+                        @if (item.DevicesLinkedGroup != null || item.UsersLinkedGroup != null)
+                        {
+                            <i class="fa fa-link fa-lg success" title="Is Linked"></i>
+                        }
+                        @if (item.FilterExpression != null || item.OnGenerateExpression != null || item.OnImportAttachmentExpression != null)
+                        {
+                            <i class="fa fa-bolt fa-lg alert" title="Has Expressions"></i>
+                        }
+                        @if (item.IsHidden)
+                        {
+                            <i class="fa fa-minus-square fa-lg error" title="Is Hidden"></i>
+                        }
+                    </td>
+                }
             </tr>
         }
     </table>
+    if (Model.Packages.Count > 0)
+    {
+        <h1 class="Config_DocumentTemplates">Document Template Packages</h1>
+        <table id="Config_DocumentTemplatePackages_List" class="tableData">
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>Scope</th>
+                <th>Document Templates</th>
+                @if (showTags)
+                {
+                    <th>&nbsp;</th>
+                }
+            </tr>
+            @foreach (var package in Model.Packages.OrderBy(p => p.Id))
+            {
+                <tr class="@(package.IsHidden ? "hidden" : null)">
+                    <td>@Html.ActionLink(package.Id.ToString(), MVC.Config.DocumentTemplate.ShowPackage(package.Id))</td>
+                    <td>@Html.DisplayFor(modelItem => package.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => package.Scope)</td>
+                    @if (showTags)
+                    {
+                        <td>
+                            @if (package.FilterExpression != null || package.OnGenerateExpression != null)
+                            {
+                                <i class="fa fa-bolt fa-lg alert" title="Has Expressions"></i>
+                            }
+                            @if (package.IsHidden)
+                            {
+                                <i class="fa fa-minus-square fa-lg error" title="Is Hidden"></i>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    }
 }
 <div class="actionBar">
     @if (Authorization.Has(Claims.Config.DocumentTemplate.UndetectedPages))
@@ -49,6 +119,10 @@ else
     @if (Authorization.Has(Claims.Config.Show))
     {
         @Html.ActionLinkButton("Expression Browser", MVC.Config.DocumentTemplate.ExpressionBrowser())
+    }
+    @if (Model.DocumentTemplates.Count > 2 && Authorization.HasAll(Claims.Config.DocumentTemplate.Create, Claims.Config.DocumentTemplate.Configure))
+    {
+        @Html.ActionLinkButton("Create Package", MVC.Config.DocumentTemplate.CreatePackage())
     }
     @if (Authorization.HasAll(Claims.Config.DocumentTemplate.Create, Claims.Config.DocumentTemplate.Configure))
     {

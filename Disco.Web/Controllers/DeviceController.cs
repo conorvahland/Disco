@@ -1,5 +1,4 @@
-﻿using Disco.BI.Extensions;
-using Disco.Models.Repository;
+﻿using Disco.Models.Repository;
 using Disco.Models.Services.Devices.Exporting;
 using Disco.Models.Services.Jobs.JobLists;
 using Disco.Models.UI.Device;
@@ -67,6 +66,10 @@ namespace Disco.Web.Controllers
             if (string.IsNullOrEmpty(m.Device.SerialNumber))
             {
                 ModelState.AddModelError("Device.SerialNumber", "The Serial Number is Required");
+            }
+            else if (m.Device.SerialNumber.Contains("/") || m.Device.SerialNumber.Contains(@"\"))
+            {
+                ModelState.AddModelError("Device.SerialNumber", @"The Serial Number cannot contain '/' or '\' characters");
             }
             else
             {
@@ -243,13 +246,21 @@ namespace Disco.Web.Controllers
                 m.Certificates = Database.DeviceCertificates.Where(c => c.DeviceSerialNumber == m.Device.SerialNumber).ToList();
 
             if (Authorization.Has(Claims.Device.Actions.GenerateDocuments))
+            {
                 m.DocumentTemplates = m.Device.AvailableDocumentTemplates(Database, UserService.CurrentUser, DateTime.Now);
+                m.DocumentTemplatePackages = m.Device.AvailableDocumentTemplatePackages(Database, UserService.CurrentUser);
+            }
 
             m.DeviceProfileDefaultOrganisationAddress = m.Device.DeviceProfile.DefaultOrganisationAddressDetails(Database);
 
-            PluginFeatureManifest deviceProfileCertificateProvider;
-            if (Disco.Services.Plugins.Plugins.TryGetPluginFeature(m.Device.DeviceProfile.CertificateProviderId, out deviceProfileCertificateProvider))
-                m.DeviceProfileCertificateProvider = deviceProfileCertificateProvider;
+            if (m.Device.DeviceProfile.CertificateProviders != null)
+            {
+                m.DeviceProfileCertificateProviders = m.Device.DeviceProfile.GetCertificateProviders().ToList();
+            }
+            if (m.Device.DeviceProfile.WirelessProfileProviders != null)
+            {
+                m.DeviceProfileWirelessProfileProviders = m.Device.DeviceProfile.GetWirelessProfileProviders().ToList();
+            }
 
             // UI Extensions
             UIExtensions.ExecuteExtensions<DeviceShowModel>(this.ControllerContext, m);

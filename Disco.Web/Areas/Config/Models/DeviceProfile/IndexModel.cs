@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Disco.Data.Repository;
+using Disco.Models.UI.Config.DeviceProfile;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Disco.Data.Repository;
-using Disco.BI.Extensions;
-using Disco.Models.UI.Config.DeviceProfile;
 
 namespace Disco.Web.Areas.Config.Models.DeviceProfile
 {
@@ -24,14 +21,19 @@ namespace Disco.Web.Areas.Config.Models.DeviceProfile
                 Description = dp.Description,
                 DistributionType = dp.DistributionType.Value,
                 DeviceCount = dp.Devices.Count,
-                DeviceDecommissionedCount = dp.Devices.Count(d => d.DecommissionedDate.HasValue)
+                DeviceDecommissionedCount = dp.Devices.Count(d => d.DecommissionedDate.HasValue),
+                IsLinked = dp.AssignedUsersLinkedGroup != null || dp.DevicesLinkedGroup != null
             }).ToArray().Cast<ConfigDeviceProfileIndexModelItem>().ToList();
 
             if (DiscoApplication.MultiSiteMode)
             {
                 foreach (var dp in m.DeviceProfiles)
+                {
                     if (dp.Address.HasValue)
-                        dp.AddressName = Database.DiscoConfiguration.OrganisationAddresses.GetAddress(dp.Address.Value).Name;
+                    {
+                        dp.AddressName = Database.DiscoConfiguration.OrganisationAddresses.GetAddress(dp.Address.Value)?.Name;
+                    }
+                }
             }
 
             return m;

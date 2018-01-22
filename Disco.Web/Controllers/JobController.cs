@@ -1,12 +1,14 @@
-﻿using Disco.BI.Extensions;
-using Disco.Models.BI.Job;
-using Disco.Models.Repository;
+﻿using Disco.Models.Repository;
+using Disco.Models.Services.Job;
 using Disco.Models.Services.Jobs.JobLists;
 using Disco.Models.UI.Job;
 using Disco.Services;
 using Disco.Services.Authorization;
+using Disco.Services.Jobs;
 using Disco.Services.Jobs.JobLists;
 using Disco.Services.Jobs.JobQueues;
+using Disco.Services.Jobs.Statistics;
+using Disco.Services.Logging;
 using Disco.Services.Plugins.Features.RepairProvider;
 using Disco.Services.Plugins.Features.UIExtension;
 using Disco.Services.Plugins.Features.WarrantyProvider;
@@ -41,7 +43,7 @@ namespace Disco.Web.Controllers
                 m.StaleJobs.ShowDates = false;
             }
             if (Authorization.Has(Claims.Job.ShowDailyChart))
-                m.DailyOpenedClosedStatistics = Disco.BI.JobBI.Statistics.DailyOpenedClosed.Data(Database, true);
+                m.DailyOpenedClosedStatistics = DailyOpenedClosed.Data(Database, true);
 
             // UI Extensions
             UIExtensions.ExecuteExtensions<JobIndexModel>(this.ControllerContext, m);
@@ -342,7 +344,10 @@ namespace Disco.Web.Controllers
                 m.UpdatableJobSubTypes = m.Job.JobType.JobSubTypes.OrderBy(jst => jst.Description).ToList();
 
             if (Authorization.Has(Claims.Job.Actions.GenerateDocuments))
+            {
                 m.AvailableDocumentTemplates = m.Job.AvailableDocumentTemplates(Database, UserService.CurrentUser, DateTime.Now);
+                m.AvailableDocumentTemplatePackages = m.Job.AvailableDocumentTemplatePackages(Database, UserService.CurrentUser);
+            }
 
             // Available Job Queues
             IEnumerable<JobQueueToken> jobQueues = null;
@@ -396,6 +401,8 @@ namespace Disco.Web.Controllers
             }
             else
             {
+                Database.Configuration.LazyLoadingEnabled = true;
+
                 // Create New Job
                 var currentUser = Database.Users.Find(UserService.CurrentUserId);
 
@@ -404,7 +411,7 @@ namespace Disco.Web.Controllers
                     && m.QuickLog.HasValue && m.QuickLog.Value
                     && m.QuickLogTaskTimeMinutes.HasValue && m.QuickLogTaskTimeMinutes.Value > 0);
 
-                var j = BI.JobBI.Utilities.Create(Database, m.Device, m.User, m.GetJobType, m.GetJobSubTypes, currentUser, addAutoQueues);
+                var j = Jobs.Create(Database, m.Device, m.User, m.GetJobType, m.GetJobSubTypes, currentUser, addAutoQueues);
 
                 if (m.DeviceHeld.Value)
                 {
@@ -423,7 +430,7 @@ namespace Disco.Web.Controllers
                         // Set Opened Date in the past
                         j.OpenedDate = DateTime.Now.AddMinutes(-1 * m.QuickLogTaskTimeMinutes.Value);
                         // Close Job
-                        j.OnCloseNormally(currentUser);
+                        j.OnCloseNormally(Database, currentUser);
                     }
                     else
                     {
@@ -431,10 +438,34 @@ namespace Disco.Web.Controllers
                     }
                 }
 
+                Database.SaveChanges();
+
+                // Evaluate OnCreate Expression
+                try
+                {
+                    var onCreateResult = j.EvaluateOnCreateExpression(Database);
+                    if (!string.IsNullOrWhiteSpace(onCreateResult))
+                    {
+                        var jl = new JobLog()
+                        {
+                            Job = j,
+                            TechUser = currentUser,
+                            Timestamp = DateTime.Now,
+                            Comments = onCreateResult
+                        };
+                        Database.JobLogs.Add(jl);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    SystemLog.LogException("Job Expression - OnCreateExpression", ex);
+                }
+
+
                 // Add Comments
                 if (!string.IsNullOrWhiteSpace(m.Comments))
                 {
-                    var jl = new Disco.Models.Repository.JobLog()
+                    var jl = new JobLog()
                     {
                         Job = j,
                         TechUser = currentUser,

@@ -1,11 +1,17 @@
-﻿using Disco.BI.Extensions;
-using Disco.Models.Repository;
+﻿using Disco.Models.Repository;
+using Disco.Services;
 using Disco.Services.Authorization;
 using Disco.Services.Devices.ManagedGroups;
 using Disco.Services.Interop.ActiveDirectory;
+using Disco.Services.Plugins;
+using Disco.Services.Plugins.Features.CertificateAuthorityProvider;
+using Disco.Services.Plugins.Features.CertificateProvider;
+using Disco.Services.Plugins.Features.WirelessProfileProvider;
 using Disco.Services.Tasks;
 using Disco.Services.Web;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace Disco.Web.Areas.API.Controllers
@@ -16,7 +22,9 @@ namespace Disco.Web.Areas.API.Controllers
         const string pName = "name";
         const string pShortName = "shortname";
         const string pDistributionType = "distributiontype";
-        const string pCertificateProviderId = "certificateproviderid";
+        const string pCertificateProviders = "certificateproviders";
+        const string pCertificateAuthorityProviders = "certificateauthorityproviders";
+        const string pWirelessProfileProviders = "wirelessprofileproviders";
         const string pOrganisationalUnit = "organisationalunit";
         const string pDefaultOrganisationAddress = "defaultorganisationaddress";
         const string pComputerNameTemplate = "computernametemplate";
@@ -56,8 +64,14 @@ namespace Disco.Web.Areas.API.Controllers
                         case pDistributionType:
                             UpdateDistributionType(deviceProfile, value);
                             break;
-                        case pCertificateProviderId:
-                            UpdateCertificateProviderId(deviceProfile, value);
+                        case pCertificateProviders:
+                            UpdateCertificateProviders(deviceProfile, value);
+                            break;
+                        case pCertificateAuthorityProviders:
+                            UpdateCertificateAuthorityProviders(deviceProfile, value);
+                            break;
+                        case pWirelessProfileProviders:
+                            UpdateWirelessProfileProviders(deviceProfile, value);
                             break;
                         case pOrganisationalUnit:
                             UpdateOrganisationalUnit(deviceProfile, value);
@@ -139,9 +153,21 @@ namespace Disco.Web.Areas.API.Controllers
         }
 
         [DiscoAuthorize(Claims.Config.DeviceProfile.Configure)]
-        public virtual ActionResult UpdateCertificateProviderId(int id, string CertificateProviderId = null, Nullable<bool> redirect = null)
+        public virtual ActionResult UpdateCertificateProviders(int id, string CertificateProviders = null, Nullable<bool> redirect = null)
         {
-            return Update(id, pCertificateProviderId, CertificateProviderId, redirect);
+            return Update(id, pCertificateProviders, CertificateProviders, redirect);
+        }
+
+        [DiscoAuthorize(Claims.Config.DeviceProfile.Configure)]
+        public virtual ActionResult UpdateCertificateAuthorityProviders(int id, string CertificateAuthorityProviders = null, Nullable<bool> redirect = null)
+        {
+            return Update(id, pCertificateAuthorityProviders, CertificateAuthorityProviders, redirect);
+        }
+
+        [DiscoAuthorize(Claims.Config.DeviceProfile.Configure)]
+        public virtual ActionResult UpdateWirelessProfileProviders(int id, string WirelessProfileProviders = null, Nullable<bool> redirect = null)
+        {
+            return Update(id, pWirelessProfileProviders, WirelessProfileProviders, redirect);
         }
 
         [DiscoAuthorize(Claims.Config.DeviceProfile.Configure)]
@@ -259,7 +285,7 @@ namespace Disco.Web.Areas.API.Controllers
         #endregion
 
         #region Update Properties
-        private void UpdateDescription(Disco.Models.Repository.DeviceProfile deviceProfile, string Description)
+        private void UpdateDescription(DeviceProfile deviceProfile, string Description)
         {
             if (string.IsNullOrWhiteSpace(Description))
                 deviceProfile.Description = null;
@@ -268,7 +294,7 @@ namespace Disco.Web.Areas.API.Controllers
             Database.SaveChanges();
         }
 
-        private void UpdateName(Disco.Models.Repository.DeviceProfile deviceProfile, string Name)
+        private void UpdateName(DeviceProfile deviceProfile, string Name)
         {
             if (string.IsNullOrWhiteSpace(Name))
                 throw new Exception("Profile name cannot be empty");
@@ -277,7 +303,7 @@ namespace Disco.Web.Areas.API.Controllers
             Database.SaveChanges();
         }
 
-        private void UpdateShortName(Disco.Models.Repository.DeviceProfile deviceProfile, string ShortName)
+        private void UpdateShortName(DeviceProfile deviceProfile, string ShortName)
         {
             if (string.IsNullOrWhiteSpace(ShortName))
                 throw new Exception("Profile short name cannot be empty");
@@ -286,37 +312,127 @@ namespace Disco.Web.Areas.API.Controllers
             Database.SaveChanges();
         }
 
-        private void UpdateDistributionType(Disco.Models.Repository.DeviceProfile deviceProfile, string DistributionType)
+        private void UpdateDistributionType(DeviceProfile deviceProfile, string DistributionType)
         {
             int iDt;
             if (int.TryParse(DistributionType, out iDt))
             {
-                deviceProfile.DistributionType = (Disco.Models.Repository.DeviceProfile.DistributionTypes)iDt;
+                deviceProfile.DistributionType = (DeviceProfile.DistributionTypes)iDt;
                 Database.SaveChanges();
                 return;
             }
             throw new Exception("Invalid Distribution Type Number");
         }
 
-        private void UpdateCertificateProviderId(Disco.Models.Repository.DeviceProfile deviceProfile, string CertificateProviderId)
+        private void UpdateCertificateProviders(DeviceProfile deviceProfile, string CertificateProviderIds)
         {
-            if (string.IsNullOrWhiteSpace(CertificateProviderId))
+            if (string.IsNullOrWhiteSpace(CertificateProviderIds))
             {
-                deviceProfile.CertificateProviderId = null;
+                deviceProfile.CertificateProviders = null;
             }
             else
             {
                 // Validate
-                var featureManifest = Disco.Services.Plugins.Plugins.GetPluginFeature(CertificateProviderId, typeof(Disco.Services.Plugins.Features.CertificateProvider.CertificateProviderFeature));
-                if (featureManifest == null)
-                    throw new Exception(string.Format("Invalid Certificate Provider Plugin Id: [{0}]", CertificateProviderId));
+                var validatedProviders = new List<PluginFeatureManifest>();
+                foreach (var certificateProviderId in CertificateProviderIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var featureManifest = Plugins.GetPluginFeature(certificateProviderId, typeof(CertificateProviderFeature));
+                    if (featureManifest == null)
+                    {
+                        throw new Exception(string.Format("Invalid Certificate Provider Plugin Id: [{0}]", certificateProviderId));
+                    }
+                    else
+                    {
+                        validatedProviders.Add(featureManifest);
+                    }
+                }
+
+                if (validatedProviders.Count > 0)
+                {
+                    deviceProfile.CertificateProviders = string.Join(",", validatedProviders.Select(p => p.Id));
+                }
                 else
-                    deviceProfile.CertificateProviderId = featureManifest.Id;
+                {
+                    deviceProfile.CertificateProviders = null;
+                }
             }
+
             Database.SaveChanges();
         }
 
-        private void UpdateOrganisationalUnit(Disco.Models.Repository.DeviceProfile deviceProfile, string OrganisationalUnit)
+        private void UpdateCertificateAuthorityProviders(DeviceProfile deviceProfile, string CertificateAuthorityProviderIds)
+        {
+            if (string.IsNullOrWhiteSpace(CertificateAuthorityProviderIds))
+            {
+                deviceProfile.CertificateAuthorityProviders = null;
+            }
+            else
+            {
+                // Validate
+                var validatedProviders = new List<PluginFeatureManifest>();
+                foreach (var certificateAuthorityProviderId in CertificateAuthorityProviderIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var featureManifest = Plugins.GetPluginFeature(certificateAuthorityProviderId, typeof(CertificateAuthorityProviderFeature));
+                    if (featureManifest == null)
+                    {
+                        throw new Exception(string.Format("Invalid Certificate Authority Provider Plugin Id: [{0}]", certificateAuthorityProviderId));
+                    }
+                    else
+                    {
+                        validatedProviders.Add(featureManifest);
+                    }
+                }
+
+                if (validatedProviders.Count > 0)
+                {
+                    deviceProfile.CertificateAuthorityProviders = string.Join(",", validatedProviders.Select(p => p.Id));
+                }
+                else
+                {
+                    deviceProfile.CertificateAuthorityProviders = null;
+                }
+            }
+
+            Database.SaveChanges();
+        }
+
+        private void UpdateWirelessProfileProviders(DeviceProfile deviceProfile, string WirelessProfileProviderIds)
+        {
+            if (string.IsNullOrWhiteSpace(WirelessProfileProviderIds))
+            {
+                deviceProfile.WirelessProfileProviders = null;
+            }
+            else
+            {
+                // Validate
+                var validatedProviders = new List<PluginFeatureManifest>();
+                foreach (var wirelessProfileProviderId in WirelessProfileProviderIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var featureManifest = Plugins.GetPluginFeature(wirelessProfileProviderId, typeof(WirelessProfileProviderFeature));
+                    if (featureManifest == null)
+                    {
+                        throw new Exception(string.Format("Invalid Wireless Profile Provider Plugin Id: [{0}]", wirelessProfileProviderId));
+                    }
+                    else
+                    {
+                        validatedProviders.Add(featureManifest);
+                    }
+                }
+
+                if (validatedProviders.Count > 0)
+                {
+                    deviceProfile.WirelessProfileProviders = string.Join(",", validatedProviders.Select(p => p.Id));
+                }
+                else
+                {
+                    deviceProfile.WirelessProfileProviders = null;
+                }
+            }
+
+            Database.SaveChanges();
+        }
+
+        private void UpdateOrganisationalUnit(DeviceProfile deviceProfile, string OrganisationalUnit)
         {
             if (string.IsNullOrWhiteSpace(OrganisationalUnit))
                 OrganisationalUnit = ActiveDirectory.Context.PrimaryDomain.DefaultComputerContainer;
@@ -328,7 +444,7 @@ namespace Disco.Web.Areas.API.Controllers
             }
         }
 
-        private void UpdateComputerNameTemplate(Disco.Models.Repository.DeviceProfile deviceProfile, string ComputerNameTemplate)
+        private void UpdateComputerNameTemplate(DeviceProfile deviceProfile, string ComputerNameTemplate)
         {
             Authorization.Require(Claims.Config.DeviceProfile.ConfigureComputerNameTemplate);
 
@@ -342,7 +458,7 @@ namespace Disco.Web.Areas.API.Controllers
             deviceProfile.ComputerNameInvalidateCache();
         }
 
-        private void UpdateDefaultOrganisationAddress(Disco.Models.Repository.DeviceProfile deviceProfile, string DefaultOrganisationAddress)
+        private void UpdateDefaultOrganisationAddress(DeviceProfile deviceProfile, string DefaultOrganisationAddress)
         {
             if (string.IsNullOrEmpty(DefaultOrganisationAddress))
             {
@@ -374,7 +490,7 @@ namespace Disco.Web.Areas.API.Controllers
             Database.SaveChanges();
         }
 
-        private void UpdateEnforceComputerNameConvention(Disco.Models.Repository.DeviceProfile deviceProfile, string EnforceComputerNameConvention)
+        private void UpdateEnforceComputerNameConvention(DeviceProfile deviceProfile, string EnforceComputerNameConvention)
         {
             bool bValue;
             if (bool.TryParse(EnforceComputerNameConvention, out bValue))
@@ -387,7 +503,7 @@ namespace Disco.Web.Areas.API.Controllers
             throw new Exception("Invalid Boolean Value");
         }
 
-        private void UpdateEnforceOrganisationalUnit(Disco.Models.Repository.DeviceProfile deviceProfile, string EnforceOrganisationalUnit)
+        private void UpdateEnforceOrganisationalUnit(DeviceProfile deviceProfile, string EnforceOrganisationalUnit)
         {
             bool bValue;
             if (bool.TryParse(EnforceOrganisationalUnit, out bValue))
@@ -400,7 +516,7 @@ namespace Disco.Web.Areas.API.Controllers
             throw new Exception("Invalid Boolean Value");
         }
 
-        private void UpdateProvisionADAccount(Disco.Models.Repository.DeviceProfile deviceProfile, string ProvisionADAccount)
+        private void UpdateProvisionADAccount(DeviceProfile deviceProfile, string ProvisionADAccount)
         {
             bool bValue;
             if (bool.TryParse(ProvisionADAccount, out bValue))

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Disco.BI;
-using Disco.BI.Extensions;
-using Disco.Models.UI.Device;
-using Disco.Web.Extensions;
-using Disco.Services.Plugins;
+﻿using Disco.Models.Services.Documents;
 using Disco.Models.Services.Jobs.JobLists;
+using Disco.Models.UI.Device;
+using Disco.Services.Plugins;
+using Disco.Web.Extensions;
+using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace Disco.Web.Models.Device
 {
@@ -18,7 +14,8 @@ namespace Disco.Web.Models.Device
 
         public List<Disco.Models.Repository.DeviceProfile> DeviceProfiles { get; set; }
         public Disco.Models.BI.Config.OrganisationAddress DeviceProfileDefaultOrganisationAddress { get; set; }
-        public PluginFeatureManifest DeviceProfileCertificateProvider { get; set; }
+        public List<PluginFeatureManifest> DeviceProfileCertificateProviders { get; set; }
+        public List<PluginFeatureManifest> DeviceProfileWirelessProfileProviders { get; set; }
 
         public List<Disco.Models.Repository.DeviceBatch> DeviceBatches { get; set; }
         public JobTableModel Jobs { get; set; }
@@ -27,6 +24,7 @@ namespace Disco.Web.Models.Device
         public string OrganisationUnit { get; set; }
 
         public List<Disco.Models.Repository.DocumentTemplate> DocumentTemplates { get; set; }
+        public List<DocumentTemplatePackage> DocumentTemplatePackages { get; set; }
 
         public List<SelectListItem> DocumentTemplatesSelectListItems
         {
@@ -34,7 +32,8 @@ namespace Disco.Web.Models.Device
             {
                 var list = new List<SelectListItem>();
                 list.Add(new SelectListItem() { Selected = true, Value = string.Empty, Text = "Generate Document" });
-                list.AddRange(this.DocumentTemplates.ToSelectListItems());
+                list.AddRange(DocumentTemplates.ToSelectListItems());
+                list.AddRange(DocumentTemplatePackages.ToSelectListItems());
                 return list;
             }
         }

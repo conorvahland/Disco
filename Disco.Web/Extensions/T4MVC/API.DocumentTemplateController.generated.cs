@@ -71,6 +71,12 @@ namespace Disco.Web.Areas.API.Controllers
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult TemplatePreview()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.TemplatePreview);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public virtual System.Web.Mvc.ActionResult UpdateDescription()
         {
             return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateDescription);
@@ -98,6 +104,12 @@ namespace Disco.Web.Areas.API.Controllers
         public virtual System.Web.Mvc.ActionResult UpdateFlattenForm()
         {
             return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateFlattenForm);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult UpdateIsHidden()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateIsHidden);
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
@@ -183,11 +195,13 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public readonly string Update = "Update";
             public readonly string Template = "Template";
+            public readonly string TemplatePreview = "TemplatePreview";
             public readonly string UpdateDescription = "UpdateDescription";
             public readonly string UpdateFilterExpression = "UpdateFilterExpression";
             public readonly string UpdateOnGenerateExpression = "UpdateOnGenerateExpression";
             public readonly string UpdateOnImportAttachmentExpression = "UpdateOnImportAttachmentExpression";
             public readonly string UpdateFlattenForm = "UpdateFlattenForm";
+            public readonly string UpdateIsHidden = "UpdateIsHidden";
             public readonly string UpdateScope = "UpdateScope";
             public readonly string UpdateJobSubTypes = "UpdateJobSubTypes";
             public readonly string UpdateDevicesLinkedGroup = "UpdateDevicesLinkedGroup";
@@ -207,11 +221,13 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public const string Update = "Update";
             public const string Template = "Template";
+            public const string TemplatePreview = "TemplatePreview";
             public const string UpdateDescription = "UpdateDescription";
             public const string UpdateFilterExpression = "UpdateFilterExpression";
             public const string UpdateOnGenerateExpression = "UpdateOnGenerateExpression";
             public const string UpdateOnImportAttachmentExpression = "UpdateOnImportAttachmentExpression";
             public const string UpdateFlattenForm = "UpdateFlattenForm";
+            public const string UpdateIsHidden = "UpdateIsHidden";
             public const string UpdateScope = "UpdateScope";
             public const string UpdateJobSubTypes = "UpdateJobSubTypes";
             public const string UpdateDevicesLinkedGroup = "UpdateDevicesLinkedGroup";
@@ -247,6 +263,14 @@ namespace Disco.Web.Areas.API.Controllers
             public readonly string id = "id";
             public readonly string redirect = "redirect";
             public readonly string Template = "Template";
+        }
+        static readonly ActionParamsClass_TemplatePreview s_params_TemplatePreview = new ActionParamsClass_TemplatePreview();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_TemplatePreview TemplatePreviewParams { get { return s_params_TemplatePreview; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_TemplatePreview
+        {
+            public readonly string id = "id";
         }
         static readonly ActionParamsClass_UpdateDescription s_params_UpdateDescription = new ActionParamsClass_UpdateDescription();
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
@@ -296,6 +320,16 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public readonly string id = "id";
             public readonly string FlattenForm = "FlattenForm";
+            public readonly string redirect = "redirect";
+        }
+        static readonly ActionParamsClass_UpdateIsHidden s_params_UpdateIsHidden = new ActionParamsClass_UpdateIsHidden();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_UpdateIsHidden UpdateIsHiddenParams { get { return s_params_UpdateIsHidden; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_UpdateIsHidden
+        {
+            public readonly string id = "id";
+            public readonly string IsHidden = "IsHidden";
             public readonly string redirect = "redirect";
         }
         static readonly ActionParamsClass_UpdateScope s_params_UpdateScope = new ActionParamsClass_UpdateScope();
@@ -395,6 +429,7 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public readonly string id = "id";
             public readonly string DataIds = "DataIds";
+            public readonly string InsertBlankPage = "InsertBlankPage";
         }
         static readonly ActionParamsClass_Delete s_params_Delete = new ActionParamsClass_Delete();
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
@@ -466,6 +501,18 @@ namespace Disco.Web.Areas.API.Controllers
         }
 
         [NonAction]
+        partial void TemplatePreviewOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string id);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult TemplatePreview(string id)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.TemplatePreview);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
+            TemplatePreviewOverride(callInfo, id);
+            return callInfo;
+        }
+
+        [NonAction]
         partial void UpdateDescriptionOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string id, string Description, bool redirect);
 
         [NonAction]
@@ -532,6 +579,20 @@ namespace Disco.Web.Areas.API.Controllers
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "FlattenForm", FlattenForm);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
             UpdateFlattenFormOverride(callInfo, id, FlattenForm, redirect);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void UpdateIsHiddenOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string id, string IsHidden, bool redirect);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult UpdateIsHidden(string id, string IsHidden, bool redirect)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateIsHidden);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "IsHidden", IsHidden);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
+            UpdateIsHiddenOverride(callInfo, id, IsHidden, redirect);
             return callInfo;
         }
 
@@ -672,15 +733,16 @@ namespace Disco.Web.Areas.API.Controllers
         }
 
         [NonAction]
-        partial void BulkGenerateOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string id, string DataIds);
+        partial void BulkGenerateOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string id, string DataIds, bool InsertBlankPage);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult BulkGenerate(string id, string DataIds)
+        public override System.Web.Mvc.ActionResult BulkGenerate(string id, string DataIds, bool InsertBlankPage)
         {
             var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.BulkGenerate);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "DataIds", DataIds);
-            BulkGenerateOverride(callInfo, id, DataIds);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "InsertBlankPage", InsertBlankPage);
+            BulkGenerateOverride(callInfo, id, DataIds, InsertBlankPage);
             return callInfo;
         }
 

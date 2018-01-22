@@ -1,14 +1,16 @@
-﻿using Disco.BI;
-using Disco.BI.DocumentTemplateBI.ManagedGroups;
-using Disco.BI.Extensions;
+﻿using Disco.BI.Extensions;
 using Disco.Models.Repository;
+using Disco.Services;
 using Disco.Services.Authorization;
+using Disco.Services.Documents;
+using Disco.Services.Documents.ManagedGroups;
 using Disco.Services.Interop.ActiveDirectory;
 using Disco.Services.Tasks;
 using Disco.Services.Users;
 using Disco.Services.Web;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -24,6 +26,7 @@ namespace Disco.Web.Areas.API.Controllers
         const string pOnGenerateExpression = "ongenerateexpression";
         const string pOnImportAttachmentExpression = "onimportattachmentexpression";
         const string pFlattenForm = "flattenform";
+        const string pIsHidden = "ishidden";
 
         [DiscoAuthorize(Claims.Config.DocumentTemplate.Configure)]
         public virtual ActionResult Update(string id, string key, string value = null, bool redirect = false)
@@ -34,10 +37,10 @@ namespace Disco.Web.Areas.API.Controllers
                     throw new ArgumentNullException("id");
                 if (string.IsNullOrEmpty(key))
                     throw new ArgumentNullException("key");
-                
+
                 ScheduledTaskStatus resultTask = null;
                 var documentTemplate = Database.DocumentTemplates.Find(id);
-                
+
                 if (documentTemplate != null)
                 {
                     switch (key.ToLower())
@@ -60,6 +63,9 @@ namespace Disco.Web.Areas.API.Controllers
                             break;
                         case pFlattenForm:
                             UpdateFlattenForm(documentTemplate, value);
+                            break;
+                        case pIsHidden:
+                            UpdateIsHidden(documentTemplate, value);
                             break;
                         default:
                             throw new Exception("Invalid Update Key");
@@ -138,6 +144,29 @@ namespace Disco.Web.Areas.API.Controllers
             }
         }
 
+        [DiscoAuthorize(Claims.Config.DocumentTemplate.Show), HttpGet]
+        public virtual ActionResult TemplatePreview(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new ArgumentNullException("id");
+            var documentTemplate = Database.DocumentTemplates.Find(id);
+            if (documentTemplate == null)
+                throw new ArgumentException("Invalid Document Template Id", "id");
+
+            var imageStream = new MemoryStream();
+            using (var previewImage = documentTemplate.GenerateTemplatePreview(Database, 450, 8, true))
+            {
+                if (previewImage == null)
+                {
+                    throw new InvalidOperationException("Template not found");
+                }
+                previewImage.SavePng(imageStream);
+            }
+            imageStream.Position = 0;
+
+            return File(imageStream, "image/png");
+        }
+
         #region Update Shortcut Methods
         [DiscoAuthorize(Claims.Config.DocumentTemplate.Configure)]
         public virtual ActionResult UpdateDescription(string id, string Description = null, bool redirect = false)
@@ -163,6 +192,11 @@ namespace Disco.Web.Areas.API.Controllers
         public virtual ActionResult UpdateFlattenForm(string id, string FlattenForm = null, bool redirect = false)
         {
             return Update(id, pFlattenForm, FlattenForm, redirect);
+        }
+        [DiscoAuthorize(Claims.Config.DocumentTemplate.Configure)]
+        public virtual ActionResult UpdateIsHidden(string id, string IsHidden = null, bool redirect = false)
+        {
+            return Update(id, pIsHidden, IsHidden, redirect);
         }
         [DiscoAuthorize(Claims.Config.DocumentTemplate.Configure)]
         public virtual ActionResult UpdateScope(string id, string Scope = null, bool redirect = false)
@@ -263,7 +297,7 @@ namespace Disco.Web.Areas.API.Controllers
         #endregion
 
         #region Update Properties
-        private void UpdateDescription(Disco.Models.Repository.DocumentTemplate documentTemplate, string Description)
+        private void UpdateDescription(DocumentTemplate documentTemplate, string Description)
         {
             if (!string.IsNullOrWhiteSpace(Description))
             {
@@ -273,9 +307,9 @@ namespace Disco.Web.Areas.API.Controllers
             }
             throw new Exception("Invalid Description");
         }
-        private ScheduledTaskStatus UpdateScope(Disco.Models.Repository.DocumentTemplate documentTemplate, string Scope)
+        private ScheduledTaskStatus UpdateScope(DocumentTemplate documentTemplate, string Scope)
         {
-            if (string.IsNullOrWhiteSpace(Scope) || !Disco.Models.Repository.DocumentTemplate.DocumentTemplateScopes.ToList().Contains(Scope))
+            if (string.IsNullOrWhiteSpace(Scope) || !DocumentTemplate.DocumentTemplateScopes.ToList().Contains(Scope))
                 throw new ArgumentException("Invalid Scope", "Scope");
 
             Database.Configuration.LazyLoadingEnabled = true;
@@ -285,7 +319,7 @@ namespace Disco.Web.Areas.API.Controllers
 
                 documentTemplate.Scope = Scope;
 
-                if (documentTemplate.Scope != Disco.Models.Repository.DocumentTemplate.DocumentTemplateScopes.Job &&
+                if (documentTemplate.Scope != DocumentTemplate.DocumentTemplateScopes.Job &&
                     documentTemplate.JobSubTypes != null)
                 {
                     foreach (var st in documentTemplate.JobSubTypes.ToArray())
@@ -306,7 +340,7 @@ namespace Disco.Web.Areas.API.Controllers
 
             return null;
         }
-        private void UpdateFilterExpression(Disco.Models.Repository.DocumentTemplate documentTemplate, string FilterExpression)
+        private void UpdateFilterExpression(DocumentTemplate documentTemplate, string FilterExpression)
         {
             if (string.IsNullOrWhiteSpace(FilterExpression))
             {
@@ -321,7 +355,7 @@ namespace Disco.Web.Areas.API.Controllers
 
             Database.SaveChanges();
         }
-        private void UpdateOnGenerateExpression(Disco.Models.Repository.DocumentTemplate documentTemplate, string OnGenerateExpression)
+        private void UpdateOnGenerateExpression(DocumentTemplate documentTemplate, string OnGenerateExpression)
         {
             if (string.IsNullOrWhiteSpace(OnGenerateExpression))
             {
@@ -336,7 +370,7 @@ namespace Disco.Web.Areas.API.Controllers
 
             Database.SaveChanges();
         }
-        private void UpdateOnImportAttachmentExpression(Disco.Models.Repository.DocumentTemplate documentTemplate, string OnImportAttachmentExpression)
+        private void UpdateOnImportAttachmentExpression(DocumentTemplate documentTemplate, string OnImportAttachmentExpression)
         {
             if (string.IsNullOrWhiteSpace(OnImportAttachmentExpression))
             {
@@ -351,7 +385,7 @@ namespace Disco.Web.Areas.API.Controllers
 
             Database.SaveChanges();
         }
-        private void UpdateFlattenForm(Disco.Models.Repository.DocumentTemplate documentTemplate, string FlattenForm)
+        private void UpdateFlattenForm(DocumentTemplate documentTemplate, string FlattenForm)
         {
             if (string.IsNullOrWhiteSpace(FlattenForm))
             {
@@ -368,7 +402,24 @@ namespace Disco.Web.Areas.API.Controllers
 
             Database.SaveChanges();
         }
-        private void UpdateJobSubTypes(Disco.Models.Repository.DocumentTemplate documentTemplate, List<string> JobSubTypes)
+        private void UpdateIsHidden(DocumentTemplate documentTemplate, string IsHidden)
+        {
+            if (string.IsNullOrWhiteSpace(IsHidden))
+            {
+                documentTemplate.IsHidden = false;
+            }
+            else
+            {
+                bool value = default(bool);
+                if (bool.TryParse(IsHidden, out value))
+                    documentTemplate.IsHidden = value;
+                else
+                    throw new Exception("Invalid Boolean Format");
+            }
+
+            Database.SaveChanges();
+        }
+        private void UpdateJobSubTypes(DocumentTemplate documentTemplate, List<string> JobSubTypes)
         {
             Database.Configuration.LazyLoadingEnabled = true;
 
@@ -382,7 +433,7 @@ namespace Disco.Web.Areas.API.Controllers
             // Add New
             if (JobSubTypes != null && JobSubTypes.Count > 0)
             {
-                var subTypes = new List<Disco.Models.Repository.JobSubType>();
+                var subTypes = new List<JobSubType>();
                 foreach (var stId in JobSubTypes)
                 {
                     var typeId = stId.Substring(0, stId.IndexOf("_"));
@@ -517,7 +568,7 @@ namespace Disco.Web.Areas.API.Controllers
         }
 
         [DiscoAuthorize(Claims.Config.DocumentTemplate.UndetectedPages)]
-        public virtual ActionResult ImporterUndetectedFile(string id, Nullable<bool> Source, Nullable<bool> Thumbnail)
+        public virtual ActionResult ImporterUndetectedFile(string id, bool? Source, bool? Thumbnail)
         {
             if (!string.IsNullOrEmpty(id))
             {
@@ -558,7 +609,9 @@ namespace Disco.Web.Areas.API.Controllers
         {
             var undetectedLocation = DataStore.CreateLocation(Database, "DocumentDropBox_Unassigned");
             var filename = System.IO.Path.Combine(undetectedLocation, string.Concat(id, ".pdf"));
-            if (BI.Interop.Pdf.PdfImporter.ProcessPdfAttachment(filename, Database, DocumentTemplateId, DataId, UserService.CurrentUser.UserId, DateTime.Now))
+            var identifier = DocumentUniqueIdentifier.Create(Database, DocumentTemplateId, DataId, UserService.CurrentUser.UserId, DateTime.Now, 0);
+
+            if (Disco.Services.Documents.AttachmentImport.Importer.ImportPdfAttachment(identifier, Database, filename))
             {
                 // Delete File
                 System.IO.File.Delete(filename);
@@ -606,7 +659,7 @@ namespace Disco.Web.Areas.API.Controllers
         }
 
         [DiscoAuthorize(Claims.Config.DocumentTemplate.BulkGenerate)]
-        public virtual ActionResult BulkGenerate(string id, string DataIds = null)
+        public virtual ActionResult BulkGenerate(string id, string DataIds = null, bool InsertBlankPage = false)
         {
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentNullException("id");
@@ -633,13 +686,13 @@ namespace Disco.Web.Areas.API.Controllers
 
             var dataIds = DataIds.Split(new string[] { Environment.NewLine, ",", ";" }, StringSplitOptions.RemoveEmptyEntries).Select(d => d.Trim()).Where(d => !string.IsNullOrEmpty(d)).ToArray();
             var timeStamp = DateTime.Now;
-            var pdf = documentTemplate.GeneratePdfBulk(Database, UserService.CurrentUser, timeStamp, dataIds);
+            var pdf = documentTemplate.GeneratePdfBulk(Database, UserService.CurrentUser, timeStamp, InsertBlankPage, dataIds);
 
             return File(pdf, "application/pdf", string.Format("{0}_Bulk_{1:yyyyMMdd-HHmmss}.pdf", documentTemplate.Id, timeStamp));
         }
 
         [DiscoAuthorize(Claims.Config.DocumentTemplate.Delete)]
-        public virtual ActionResult Delete(string id, Nullable<bool> redirect = false)
+        public virtual ActionResult Delete(string id, bool? redirect = false)
         {
             try
             {

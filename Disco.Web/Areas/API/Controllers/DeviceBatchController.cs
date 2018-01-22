@@ -1,5 +1,5 @@
-﻿using Disco.BI.Extensions;
-using Disco.Models.Repository;
+﻿using Disco.Models.Repository;
+using Disco.Services;
 using Disco.Services.Authorization;
 using Disco.Services.Devices.ManagedGroups;
 using Disco.Services.Interop.ActiveDirectory;
@@ -500,7 +500,7 @@ namespace Disco.Web.Areas.API.Controllers
                 DeviceBatch.AssignedUsersLinkedGroup = configJson;
                 Database.SaveChanges();
 
-                var managedGroup = DeviceBatchDevicesManagedGroup.Initialize(DeviceBatch);
+                var managedGroup = DeviceBatchAssignedUsersManagedGroup.Initialize(DeviceBatch);
                 if (managedGroup != null) // Sync Group
                     return ADManagedGroupsSyncTask.ScheduleSync(managedGroup);
             }

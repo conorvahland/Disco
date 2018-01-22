@@ -1,10 +1,10 @@
 ﻿using Disco.Data.Repository;
+using Disco.Services;
 using Disco.Services.Interop.DiscoServices;
 using Exceptionless;
 using Exceptionless.Configuration;
 using System;
 using System.Linq;
-using System.Web;
 
 [assembly: Exceptionless("https://errors.discoict.com.au", "c81e644582374f68aaf1fb546e3db0cd")]
 
@@ -67,7 +67,7 @@ namespace Disco.Web
             InitalizeCoreEnvironment(Database);
 
             // Initialize Expressions
-            BI.Expressions.Expression.InitializeExpressions();
+            Disco.Services.Expressions.Expression.InitializeExpressions();
 
             // Initialize Job Queues
             Disco.Services.Jobs.JobQueues.JobQueueService.Initialize(Database);
@@ -77,7 +77,7 @@ namespace Disco.Web
 
             // Initialize Satellite Managed Groups (which don't belong to any other component)
             Disco.Services.Devices.ManagedGroups.DeviceManagedGroups.Initialize(Database);
-            Disco.BI.DocumentTemplateBI.ManagedGroups.DocumentTemplateManagedGroups.Initialize(Database);
+            Disco.Services.Documents.ManagedGroups.DocumentTemplateManagedGroups.Initialize(Database);
 
             // Initialize Plugins
             Disco.Services.Plugins.Plugins.InitalizePlugins(Database);
@@ -93,10 +93,11 @@ namespace Disco.Web
             }
 
             // Setup Attachment Monitor
-            DiscoApplication.DocumentDropBoxMonitor = new BI.DocumentTemplateBI.Importer.DocumentDropBoxMonitor(Database, DiscoApplication.SchedulerFactory, HttpContext.Current.Cache);
+            var dropboxLocation = DataStore.CreateLocation(Database, "DocumentDropBox");
+            DiscoApplication.DocumentDropBoxMonitor = new Services.Documents.AttachmentImport.ImportDirectoryMonitor(dropboxLocation, DiscoApplication.SchedulerFactory.GetScheduler(), 5000);
 
-            DiscoApplication.DocumentDropBoxMonitor.StartWatching();
-            DiscoApplication.DocumentDropBoxMonitor.ScheduleCurrentFiles(10);
+            DiscoApplication.DocumentDropBoxMonitor.Start();
+            DiscoApplication.DocumentDropBoxMonitor.ScheduleCurrentFiles(10000); // 10 Second Delay
         }
 
         public static void InitializeUpdateEnvironment(DiscoDataContext Database, Version PreviousVersion)
@@ -104,11 +105,19 @@ namespace Disco.Web
             InitalizeCoreEnvironment(Database);
 
             // Initialize Scheduled Tasks
-            Disco.Services.Tasks.ScheduledTasks.InitalizeScheduledTasks(Database, DiscoApplication.SchedulerFactory, true);
+            Disco.Services.Tasks.ScheduledTasks.InitalizeScheduledTasks(Database, DiscoApplication.SchedulerFactory, false);
 
             // Import MAC Address Migration
             if (PreviousVersion != null && PreviousVersion < new Version(1, 2, 910, 0))
-                Disco.BI.DeviceBI.Migration.LogMacAddressImporting.SetRequired(Database);
+                Services.Devices.Enrolment.LogMacAddressImportingTask.SetRequired(Database);
+
+            // Attachment PDF Thumbnail Update
+            if (PreviousVersion != null && PreviousVersion < new Version(2, 2, 0, 0))
+                Services.Documents.AttachmentImport.ThumbnailUpdateTask.SetRequired(Database);
+
+            // AD Device Description Update
+            if (PreviousVersion != null && PreviousVersion < new Version(2, 2, 16281, 0))
+                Services.Interop.ActiveDirectory.ADDeviceDescriptionUpdateTask.SetRequired(Database);
         }
 
         public static void DisposeEnvironment()

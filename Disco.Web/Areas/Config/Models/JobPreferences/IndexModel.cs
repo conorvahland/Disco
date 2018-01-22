@@ -1,5 +1,5 @@
 ﻿using Disco.Data.Repository;
-using Disco.Models.BI.Job;
+using Disco.Models.Services.Job;
 using Disco.Models.UI.Config.JobPreferences;
 using Disco.Services.Extensions;
 using System;
@@ -16,6 +16,11 @@ namespace Disco.Web.Areas.Config.Models.JobPreferences
         public string DefaultNoticeboardTheme { get; set; }
         public LocationModes LocationMode { get; set; }
         public List<string> LocationList { get; set; }
+
+        [DataType(DataType.MultilineText)]
+        public string OnCreateExpression { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string OnCloseExpression { get; set; }
 
         public List<KeyValuePair<string, string>> DefaultNoticeboardThemeOptions()
         {

@@ -4,10 +4,10 @@
 }
 .tableData > tbody > tr > td {
   border: solid 1px #f4f4f4;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .tableData > tbody > tr:nth-child(odd) > td {
-  background-color: #fcfcfc;
+  background-color: #fbfbfb;
 }
 .tableData > thead > tr > th,
 .tableData > tbody > tr > th {
@@ -15,10 +15,7 @@
   border: solid 1px #f4f4f4;
 }
 .tableData > tbody > tr:hover > td {
-  background-color: #fefefe;
-}
-.tableData > tbody > tr:hover:nth-child(odd) > td {
-  background-color: #fafafa;
+  background-color: #f9f9f9;
 }
 .tableData > tfoot > tr > th,
 .tableData > tfoot > tr > td {
@@ -30,14 +27,14 @@
 }
 .tableDataDark td {
   border: solid 1px #d8d8d8;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .tableDataDark th {
-  background-color: #eeeeee;
+  background-color: #eee;
   border: solid 1px #d8d8d8;
 }
 .tableDataContainer {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .tableDataVertical {
   border: solid 1px #f4f4f4;
@@ -81,7 +78,7 @@
 #updateAvailableContainer {
   float: right;
   border: 1px dashed #ddd;
-  background-color: #ffffff;
+  background-color: #fff;
   font-size: 0.6em;
   line-height: 1em;
   padding: 10px 10px 4px 70px;
@@ -108,8 +105,8 @@
 .Config_LinkedGroup_Instance {
   margin: 4px 0 8px 4px;
   padding: 4px 0 4px 6px;
-  border-left: 4px solid #cccccc;
-  background-color: #ffffff;
+  border-left: 4px solid #ccc;
+  background-color: #fff;
 }
 .Config_LinkedGroup_Instance div.code {
   margin-left: 2px;
@@ -117,8 +114,11 @@
 #Config_LinkedGroup_Dialog h3 {
   margin-bottom: 6px;
 }
-#Config_LinkedGroup_Dialog div.input {
+#Config_LinkedGroup_Dialog table.input {
   margin-top: 12px;
+}
+#Config_LinkedGroup_Dialog table.input th {
+  text-align: right;
 }
 #expressionEditor #expressionEditorExceptionContainer {
   display: none;
@@ -154,10 +154,10 @@ table.expressionsTable {
 }
 table.expressionsTable > tbody > tr > td {
   border: solid 1px #f4f4f4;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 table.expressionsTable > tbody > tr:nth-child(odd) > td {
-  background-color: #fcfcfc;
+  background-color: #fbfbfb;
 }
 table.expressionsTable > thead > tr > th,
 table.expressionsTable > tbody > tr > th {
@@ -165,10 +165,7 @@ table.expressionsTable > tbody > tr > th {
   border: solid 1px #f4f4f4;
 }
 table.expressionsTable > tbody > tr:hover > td {
-  background-color: #fefefe;
-}
-table.expressionsTable > tbody > tr:hover:nth-child(odd) > td {
-  background-color: #fafafa;
+  background-color: #f9f9f9;
 }
 table.expressionsTable > tfoot > tr > th,
 table.expressionsTable > tfoot > tr > td {
@@ -186,10 +183,10 @@ table.expressionsTable td.parseError {
 }
 #deviceComponents > tbody > tr > td {
   border: solid 1px #f4f4f4;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #deviceComponents > tbody > tr:nth-child(odd) > td {
-  background-color: #fcfcfc;
+  background-color: #fbfbfb;
 }
 #deviceComponents > thead > tr > th,
 #deviceComponents > tbody > tr > th {
@@ -197,10 +194,7 @@ table.expressionsTable td.parseError {
   border: solid 1px #f4f4f4;
 }
 #deviceComponents > tbody > tr:hover > td {
-  background-color: #fefefe;
-}
-#deviceComponents > tbody > tr:hover:nth-child(odd) > td {
-  background-color: #fafafa;
+  background-color: #f9f9f9;
 }
 #deviceComponents > tfoot > tr > th,
 #deviceComponents > tfoot > tr > td {
@@ -230,7 +224,7 @@ table.expressionsTable td.parseError {
   cursor: pointer;
 }
 #deviceComponents tr i.fa-asterisk {
-  color: #fa6800;
+  color: #FA6800;
   font-size: 1em;
   left: 10px;
   top: 3px;
@@ -257,7 +251,7 @@ table.expressionsTable td.parseError {
   vertical-align: middle;
 }
 #organisationAddresses tr:nth-child(even) {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #organisationAddresses i.fa {
   font-size: 1.7em;
@@ -331,7 +325,7 @@ table.deviceProfileTable th.deviceCount {
   content: "\f07b";
 }
 .organisationalUnitTree ul.fancytree-container > li > span > span.fancytree-icon:before {
-  color: #fa6800;
+  color: #FA6800;
   font-size: 1em;
   content: "\f0e8";
 }
@@ -423,7 +417,7 @@ div.logEventsViewport table.logEventsViewport > thead > tr > th.eventType {
   width: 180px;
 }
 div.logEventsViewport table.logEventsViewport > tbody > tr {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 div.logEventsViewport table.logEventsViewport > tbody > tr:nth-child(even) {
   background-color: #eee;
@@ -444,7 +438,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.icon > i.fa-info
   color: #1e6dab;
 }
 div.logEventsViewport table.logEventsViewport > tbody > tr > td.icon > i.fa-exclamation-triangle {
-  color: #f0a30a;
+  color: #F0A30A;
 }
 div.logEventsViewport table.logEventsViewport > tbody > tr > td.icon > i.fa-exclamation-circle {
   color: #e51400;
@@ -546,7 +540,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #dialogSession .sessionInfoContainer .sessionInfoMessages div.logEventsViewportContainer {
   overflow: auto;
@@ -559,7 +553,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #dialogSession .sessionInfoContainer .sessionInfoMessages table.logEventsViewport {
   padding: 0;
   margin: 0;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #dialogSession .sessionInfoContainer .sessionInfoMessages table.logEventsViewport > thead > tr {
   background-color: #eee;
@@ -579,7 +573,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   width: 180px;
 }
 #dialogSession .sessionInfoContainer .sessionInfoMessages table.logEventsViewport > tbody > tr {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #dialogSession .sessionInfoContainer .sessionInfoMessages table.logEventsViewport > tbody > tr:nth-child(even) {
   background-color: #eee;
@@ -600,7 +594,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   color: #1e6dab;
 }
 #dialogSession .sessionInfoContainer .sessionInfoMessages table.logEventsViewport > tbody > tr > td.icon > i.fa-exclamation-triangle {
-  color: #f0a30a;
+  color: #F0A30A;
 }
 #dialogSession .sessionInfoContainer .sessionInfoMessages table.logEventsViewport > tbody > tr > td.icon > i.fa-exclamation-circle {
   color: #e51400;
@@ -648,7 +642,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 }
 #Config_DocumentTemplates_JobSubTypes {
   border: 1px dashed #d8d8d8;
-  background-color: #ffffff;
+  background-color: #fff;
   padding: 4px;
   margin-top: 6px;
 }
@@ -696,6 +690,107 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   height: 200px;
   margin: 0 auto;
 }
+h1.Config_DocumentTemplates {
+  margin: 10px 0 6px;
+}
+#Config_DocumentTemplatePackages_Show > div.form > table > tbody > tr > th {
+  width: 140px;
+}
+#Config_DocumentTemplatePackages_Show #Package_FilterExpression,
+#Config_DocumentTemplatePackages_Show #Package_OnGenerateExpression {
+  height: 16px;
+  min-height: 16px;
+  overflow: hidden;
+  font-family: Consolas, "Courier New", monospace;
+}
+#Config_DocumentTemplatePackages_Show #Config_DocumentTemplatePackages_Scope_Button {
+  margin-top: 4px;
+}
+#Config_DocumentTemplatePackages_Show #Config_DocumentTemplatePackage_List {
+  list-style-type: decimal;
+  list-style-position: inside;
+  background-color: #f2f2f2;
+  border: 1px solid #d8d8d8;
+}
+#Config_DocumentTemplatePackages_Show #Config_DocumentTemplatePackage_List li {
+  padding: 6px 8px;
+}
+#Config_DocumentTemplatePackages_Show #Config_DocumentTemplatePackage_List li:not(:first-child) {
+  border-top: 1px dashed #d8d8d8;
+}
+#Config_DocumentTemplatePackages_Show #Config_DocumentTemplatePackage_List li .id {
+  font-family: Consolas, "Courier New", monospace;
+  float: right;
+}
+#Config_DocumentTemplatePackages_Scope_Dialog div.input {
+  margin: 14px 10px 20px;
+}
+#Config_DocumentTemplatePackages_JobSubTypes {
+  border: 1px dashed #d8d8d8;
+  background-color: #fff;
+  padding: 4px;
+  margin-top: 6px;
+}
+#Config_DocumentTemplatePackages_JobSubTypes > h4 {
+  margin-bottom: 4px;
+}
+#Config_DocumentTemplatePackages_JobSubTypes #Config_DocumentTemplatePackages_JobSubTypes_Update {
+  margin-top: 4px;
+}
+#Config_DocumentTemplatePackages_JobSubTypes_Update_Dialog #Config_DocumentTemplatePackages_JobSubTypes_Update_Dialog_Types {
+  margin: 0 0 8px 0;
+}
+#Config_DocumentTemplatePackages_JobSubTypes_Update_Dialog .jobTypes {
+  padding: 6px 0;
+}
+#Config_DocumentTemplatePackages_JobSubTypes_Update_Dialog .jobTypes .jobSubTypes {
+  background-color: #f2f2f2;
+  border-left: 4px solid #d8d8d8;
+  padding: 4px 0 4px 8px;
+  margin: 4px 0 0 6px;
+}
+#Config_DocumentTemplatePackages_JobSubTypes_Update_Dialog .checkboxBulkSelectContainer {
+  font-size: .8em;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog h3 {
+  margin-bottom: 4px;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog > div {
+  width: 374px;
+  float: left;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog > div:first-child {
+  margin-right: 20px;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog .templates_connected {
+  min-height: 200px;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog ol {
+  list-style-type: decimal;
+  padding-left: 24px;
+  border: 1px solid #d8d8d8;
+  background-color: #f2f2f2;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog li {
+  background-color: #fff;
+  border: 1px solid #d8d8d8;
+  margin: 4px;
+  padding: 2px 4px;
+  -moz-box-shadow: 0 0 5px rgba(209, 209, 209, 0.5);
+  -webkit-box-shadow: 0 0 5px rgba(209, 209, 209, 0.5);
+  box-shadow: 0 0 5px rgba(209, 209, 209, 0.5);
+  cursor: default;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog li:hover {
+  background-color: #cddbec;
+  border-color: #1e6dab;
+}
+#Config_DocumentTemplatePackages_Templates_Dialog li .id {
+  font-family: Consolas, "Courier New", monospace;
+  color: #888;
+  float: right;
+  font-size: .9em;
+}
 #importStatus #sessions .session {
   padding: 4px;
   margin-bottom: 10px;
@@ -739,7 +834,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   float: left;
   margin: 3px 0 3px 0;
   padding: 170px 0 0 0;
-  background-color: #ffffff;
+  background-color: #fff;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -763,7 +858,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #importStatus #sessions .session .sessionInfoMessages div.logEventsViewportContainer {
   max-height: 220px;
@@ -777,7 +872,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #importStatus #sessions .session .sessionInfoMessages table.logEventsViewport {
   padding: 0;
   margin: 0;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #importStatus #sessions .session .sessionInfoMessages table.logEventsViewport > thead > tr {
   background-color: #eee;
@@ -797,7 +892,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   width: 180px;
 }
 #importStatus #sessions .session .sessionInfoMessages table.logEventsViewport > tbody > tr {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #importStatus #sessions .session .sessionInfoMessages table.logEventsViewport > tbody > tr:nth-child(even) {
   background-color: #eee;
@@ -818,7 +913,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   color: #1e6dab;
 }
 #importStatus #sessions .session .sessionInfoMessages table.logEventsViewport > tbody > tr > td.icon > i.fa-exclamation-triangle {
-  color: #f0a30a;
+  color: #F0A30A;
 }
 #importStatus #sessions .session .sessionInfoMessages table.logEventsViewport > tbody > tr > td.icon > i.fa-exclamation-circle {
   color: #e51400;
@@ -838,7 +933,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   float: left;
   margin: 4px;
   border: 1px solid #f4f4f4;
-  background-color: #fcfcfc;
+  background-color: #fbfbfb;
   height: 256px;
   width: 256px;
   background-position: top center;
@@ -862,27 +957,9 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   background-size: contain;
 }
 #undetectedPageDialog .actions {
-  border-top: 1px solid #d1d1d1;
+  border-top: 1px solid #D1D1D1;
   padding-top: 8px;
   margin-top: 8px;
-  text-align: right;
-}
-#Config_DeviceBatches #Config_DeviceBatches_List tr.decommissioned {
-  display: none;
-}
-#Config_DeviceBatches #Config_DeviceBatches_List tr.decommissioned > td {
-  background-color: #f7f7f7;
-  color: #888;
-}
-#Config_DeviceBatches #Config_DeviceBatches_List tr.decommissioned:nth-child(odd) > td {
-  background-color: #f2f2f2;
-}
-#Config_DeviceBatches_ShowDecommissioned {
-  position: absolute;
-  right: 30px;
-  bottom: 8px;
-  font-size: 0.5em;
-  line-height: 1em;
   text-align: right;
 }
 .deviceBatches #DeviceBatch_PurchaseDetails_Container {
@@ -912,7 +989,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 }
 #plugins .pageMenuArea a > h3 {
   display: inline;
-  color: #335a87;
+  color: #335A87;
 }
 #plugins .pageMenuArea a > h3:hover {
   color: #5e8cc2;
@@ -929,11 +1006,11 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 }
 #plugins #pageMenu td .pageMenuArea > a,
 #plugins #pageMenu td .pageMenuArea > h3 {
-  color: #333333;
+  color: #333;
 }
 #plugins #pageMenu td .pageMenuArea > a:hover,
 #plugins #pageMenu td .pageMenuArea > h3:hover {
-  color: #335a87;
+  color: #335A87;
 }
 #dialogUninstallPlugins #uninstallPlugin {
   margin: .5em 0;
@@ -966,7 +1043,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #pluginLibrary .pluginItem .pluginItemBlurb {
   margin: 8px 0 8px 2px;
   padding: 0 4px;
-  border-left: 4px solid #d1d1d1;
+  border-left: 4px solid #D1D1D1;
 }
 #pluginLibrary .pluginItem .pluginItemBlurb * {
   padding: 0;
@@ -981,7 +1058,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #pluginLibrary .pluginItem > h2:first-child i {
   font-size: .9em;
   padding-right: 4px;
-  color: #333333;
+  color: #333;
 }
 #pluginLibrary .pluginItem > h2:first-child a {
   float: right;
@@ -1019,7 +1096,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   content: "\f023";
 }
 #Config_AuthRoles_Show #Config_AuthRoles_Claims_Tree span.fancytree-ico-c.fancytree-selected > span.fancytree-icon:before {
-  color: #60a917;
+  color: #60A917;
   content: "\f09c";
 }
 #Config_AuthRoles_Show #Config_AuthRoles_Claims_Tree span.fancytree-node.fancytree-selected {
@@ -1042,7 +1119,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #Config_AuthRoles_Subjects_Update_Dialog #Config_AuthRoles_Subjects_Update_Dialog_ListContainer {
   height: 280px;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #d8d8d8;
 }
 #Config_AuthRoles_Subjects_Update_Dialog #Config_AuthRoles_Subjects_Update_Dialog_None {
@@ -1084,7 +1161,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   height: 80px;
   border: 1px solid #444;
   font-size: 4px;
-  color: #ffffff;
+  color: #fff;
   overflow: hidden;
   text-transform: uppercase;
 }
@@ -1092,7 +1169,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   height: 6px;
   padding-left: 3px;
   overflow: hidden;
-  background-color: #333333;
+  background-color: #333;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview .column-heading {
   float: left;
@@ -1112,13 +1189,13 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   display: block;
   height: 4px;
   margin: 1px;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-default {
   background: linear-gradient(to bottom, #165180, #1e6dab) left top repeat-x #1e6dab;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-default .column span.alert {
-  background-color: #e51400;
+  background-color: #E51400;
   color: #ffffff;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-default-soft {
@@ -1129,84 +1206,84 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-green {
-  background: linear-gradient(to bottom, #477c11, #60a917) left top repeat-x #60a917;
+  background: linear-gradient(to bottom, #477c11, #60A917) left top repeat-x #60A917;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-green .column span.alert {
-  background-color: #e51400;
+  background-color: #E51400;
   color: #ffffff;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-green-soft {
-  background: linear-gradient(to bottom, #477c11, #60a917) left top repeat-x #60a917;
+  background: linear-gradient(to bottom, #477c11, #60A917) left top repeat-x #60A917;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-green-soft .column span.alert {
   background-color: #e5cc11;
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-violet {
-  background: linear-gradient(to bottom, #8800cc, #aa00ff) left top repeat-x #aa00ff;
+  background: linear-gradient(to bottom, #8800cc, #AA00FF) left top repeat-x #AA00FF;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-violet .column span.alert {
-  background-color: #e51400;
+  background-color: #E51400;
   color: #ffffff;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-violet-soft {
-  background: linear-gradient(to bottom, #8800cc, #aa00ff) left top repeat-x #aa00ff;
+  background: linear-gradient(to bottom, #8800cc, #AA00FF) left top repeat-x #AA00FF;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-violet-soft .column span.alert {
   background-color: #f0e277;
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-magenta {
-  background: linear-gradient(to bottom, #a50058, #d80073) left top repeat-x #d80073;
+  background: linear-gradient(to bottom, #a50058, #D80073) left top repeat-x #D80073;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-magenta .column span.alert {
   background-color: #1681b4;
-  color: #ffffff;
+  color: #fff;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-magenta-soft {
-  background: linear-gradient(to bottom, #a50058, #d80073) left top repeat-x #d80073;
+  background: linear-gradient(to bottom, #a50058, #D80073) left top repeat-x #D80073;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-magenta-soft .column span.alert {
   background-color: #85cdf0;
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-crimson {
-  background: linear-gradient(to bottom, #6f0019, #a20025) left top repeat-x #a20025;
+  background: linear-gradient(to bottom, #6f0019, #A20025) left top repeat-x #A20025;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-crimson .column span.alert {
   background-color: #b0cc22;
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-crimson-soft {
-  background: linear-gradient(to bottom, #6f0019, #a20025) left top repeat-x #a20025;
+  background: linear-gradient(to bottom, #6f0019, #A20025) left top repeat-x #A20025;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-crimson-soft .column span.alert {
   background-color: #cee077;
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-amber {
-  background: linear-gradient(to bottom, #bf8208, #f0a30a) left top repeat-x #f0a30a;
+  background: linear-gradient(to bottom, #bf8208, #F0A30A) left top repeat-x #F0A30A;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-amber .column span.alert {
-  background-color: #0050ef;
+  background-color: #0050EF;
   color: #ffffff;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-amber-soft {
-  background: linear-gradient(to bottom, #bf8208, #f0a30a) left top repeat-x #f0a30a;
+  background: linear-gradient(to bottom, #bf8208, #F0A30A) left top repeat-x #F0A30A;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-amber-soft .column span.alert {
   background-color: #bbd0fb;
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-brown {
-  background: linear-gradient(to bottom, #5c401f, #825a2c) left top repeat-x #825a2c;
+  background: linear-gradient(to bottom, #5c401f, #825A2C) left top repeat-x #825A2C;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-brown .column span.alert {
-  background-color: #e3c800;
+  background-color: #E3C800;
   color: #000000;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-brown-soft {
-  background: linear-gradient(to bottom, #5c401f, #825a2c) left top repeat-x #825a2c;
+  background: linear-gradient(to bottom, #5c401f, #825A2C) left top repeat-x #825A2C;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-brown-soft .column span.alert {
   background-color: #f0e277;
@@ -1216,7 +1293,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   background: linear-gradient(to bottom, #4e5d6c, #647689) left top repeat-x #647689;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-steel .column span.alert {
-  background-color: #e51400;
+  background-color: #E51400;
   color: #ffffff;
 }
 #Config_ReportPrefs #Config_ReportPrefs_Preview.theme-steel-soft {
@@ -1243,8 +1320,8 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 }
 #Config_ReportPrefs_Builder .filter div.options {
   display: none;
-  background-color: #ffffff;
-  border: 1px dashed #cccccc;
+  background-color: #fff;
+  border: 1px dashed #ccc;
   margin-top: 4px;
   margin-left: 15px;
   padding: 2px 6px;
@@ -1262,9 +1339,9 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #Config_ReportPrefs_Builder_Buttonpane textarea {
   float: left;
   font-family: Consolas, "Courier New", monospace;
-  color: #333333;
+  color: #333;
   width: calc(100% - 1.2em - 10px);
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   white-space: pre;
   min-height: 0;
 }
@@ -1272,7 +1349,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   float: right;
   cursor: pointer;
   margin: .3em .2em 0 0;
-  color: #335a87;
+  color: #335A87;
 }
 #Config_ReportPrefs_Builder_Buttonpane i:hover {
   color: #5e8cc2;
@@ -1296,7 +1373,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #Config_Location_List_Dialog #Config_Location_List_Dialog_ListContainer {
   height: 280px;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #d8d8d8;
 }
 #Config_Location_List_Dialog #Config_Location_List_Dialog_None {
@@ -1341,6 +1418,16 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   height: 200px;
   margin: 0 auto;
 }
+#Config_JobPref_Expressions {
+  margin-top: 10px;
+}
+#Config_JobPref_Expressions #OnCreateExpression,
+#Config_JobPref_Expressions #OnCloseExpression {
+  height: 16px;
+  min-height: 16px;
+  overflow: hidden;
+  font-family: Consolas, "Courier New", monospace;
+}
 #Config_JobQueues_Index i {
   width: 1.2857142857142858em;
   text-align: center;
@@ -1370,8 +1457,8 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #Config_JobQueues_Icon_Update_Dialog div.icons {
   text-align: center;
   font-size: 30px;
-  background-color: #ffffff;
-  border: 1px solid #d1d1d1;
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
   margin: 6px 0 14px 0;
 }
 #Config_JobQueues_Icon_Update_Dialog div.icons i {
@@ -1379,7 +1466,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   text-align: center;
   cursor: pointer;
   padding: 4px 0px;
-  color: #333333;
+  color: #333;
   opacity: .6;
 }
 #Config_JobQueues_Icon_Update_Dialog div.icons i:hover {
@@ -1425,7 +1512,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #Config_JobQueues_Subjects_Update_Dialog #Config_JobQueues_Subjects_Update_Dialog_ListContainer {
   height: 280px;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #d8d8d8;
 }
 #Config_JobQueues_Subjects_Update_Dialog #Config_JobQueues_Subjects_Update_Dialog_None {
@@ -1458,6 +1545,13 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #Config_JobQueues_Subjects_Update_Dialog #Config_JobQueues_Subjects_Update_Dialog_List li .remove:hover {
   opacity: 1;
 }
+#Config_UserFlags_Show #UserFlag_OnAssignmentExpression,
+#Config_UserFlags_Show #UserFlag_OnUnassignmentExpression {
+  height: 16px;
+  min-height: 16px;
+  overflow: hidden;
+  font-family: Consolas, "Courier New", monospace;
+}
 #Config_UserFlags_Index i {
   width: 1.2857142857142858em;
   text-align: center;
@@ -1487,8 +1581,8 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 #Config_UserFlags_Icon_Update_Dialog div.icons {
   text-align: center;
   font-size: 30px;
-  background-color: #ffffff;
-  border: 1px solid #d1d1d1;
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
   margin: 6px 0 14px 0;
 }
 #Config_UserFlags_Icon_Update_Dialog div.icons i {
@@ -1496,7 +1590,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   text-align: center;
   cursor: pointer;
   padding: 4px 0px;
-  color: #333333;
+  color: #333;
   opacity: .6;
 }
 #Config_UserFlags_Icon_Update_Dialog div.icons i:hover {
@@ -1509,7 +1603,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
 }
 #Config_UserFlags_BulkAssign_ModeDialog > div {
   margin-top: 6px;
-  background-color: #ffffff;
+  background-color: #fff;
   line-height: 1.3em;
   border: 1px solid #ddd;
 }
@@ -1532,7 +1626,7 @@ div.logEventsViewport table.logEventsViewport > tbody > tr > td.eventType {
   background-color: #edffda;
 }
 #Config_UserFlags_BulkAssign_ModeDialog > div > div.add i {
-  color: #60a917;
+  color: #60A917;
 }
 #Config_UserFlags_BulkAssign_ModeDialog > div > div.override:hover {
   background-color: #ffd8d4;

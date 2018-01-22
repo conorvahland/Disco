@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Disco.Data.Repository;
+﻿using Disco.Data.Repository;
 using Disco.Models.Repository;
 using Disco.Models.UI.Config.DocumentTemplate;
-using Disco.BI.DocumentTemplateBI.ManagedGroups;
+using Disco.Services.Documents.ManagedGroups;
+using Disco.Services.Expressions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Disco.Web.Areas.Config.Models.DocumentTemplate
 {
@@ -15,9 +14,11 @@ namespace Disco.Web.Areas.Config.Models.DocumentTemplate
 
         public int StoredInstanceCount { get; set; }
 
-        public List<Disco.BI.Expressions.Expression> TemplateExpressions { get; set; }
+        public List<bool> TemplatePagesHaveAttachmentId { get; set; }
+        public List<Expression> TemplateExpressions { get; set; }
+        public int TemplatePageCount { get { return TemplatePagesHaveAttachmentId?.Count() ?? 0; } }
 
-        public List<Disco.Models.Repository.JobType> JobTypes { get; set; }
+        public List<JobType> JobTypes { get; set; }
 
         public List<string> Scopes
         {

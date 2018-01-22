@@ -1,5 +1,5 @@
-﻿using Disco.BI.Extensions;
-using Disco.Data.Configuration;
+﻿using Disco.Data.Configuration;
+using Disco.Services;
 using Disco.Services.Authorization;
 using Disco.Services.Interop.ActiveDirectory;
 using Disco.Services.Interop.DiscoServices;
@@ -28,40 +28,17 @@ namespace Disco.Web.Areas.API.Controllers
         [DiscoAuthorize(Claims.DiscoAdminAccount)]
         public virtual ActionResult UpdateAttachmentThumbnails()
         {
-            // Device Attachments
-            var das = Database.DeviceAttachments.Where(da => da.MimeType == "application/pdf");
-            foreach (var da in das)
-            {
-                var fileName = da.RepositoryThumbnailFilename(Database);
-                if (!System.IO.File.Exists(fileName))
-                {
-                    da.GenerateThumbnail(Database);
-                }
-            }
+            var ts = Disco.Services.Documents.AttachmentImport.ThumbnailUpdateTask.ScheduleImmediately();
+            ts.SetFinishedUrl(Url.Action(MVC.Config.SystemConfig.Index()));
+            return RedirectToAction(MVC.Config.Logging.TaskStatus(ts.SessionId));
+        }
 
-            // User Attachments
-            var uas = Database.UserAttachments.Where(ua => ua.MimeType == "application/pdf");
-            foreach (var ua in uas)
-            {
-                var fileName = ua.RepositoryThumbnailFilename(Database);
-                if (!System.IO.File.Exists(fileName))
-                {
-                    ua.GenerateThumbnail(Database);
-                }
-            }
-
-            // Job Attachments
-            var jas = Database.JobAttachments.Where(ja => ja.MimeType == "application/pdf");
-            foreach (var ja in jas)
-            {
-                var fileName = ja.RepositoryThumbnailFilename(Database);
-                if (!System.IO.File.Exists(fileName))
-                {
-                    ja.GenerateThumbnail(Database);
-                }
-            }
-
-            return Content("Done", "text/text");
+        [DiscoAuthorize(Claims.DiscoAdminAccount)]
+        public virtual ActionResult UpdateADDeviceDescriptions()
+        {
+            var ts = Disco.Services.Interop.ActiveDirectory.ADDeviceDescriptionUpdateTask.ScheduleImmediately();
+            ts.SetFinishedUrl(Url.Action(MVC.Config.SystemConfig.Index()));
+            return RedirectToAction(MVC.Config.Logging.TaskStatus(ts.SessionId));
         }
 
         [DiscoAuthorize(Claims.Config.System.Show)]
@@ -190,6 +167,11 @@ namespace Disco.Web.Areas.API.Controllers
         [DiscoAuthorize(Claims.Config.Organisation.ConfigureAddresses)]
         public virtual ActionResult DeleteOrganisationAddress(int Id, bool redirect = false)
         {
+            // Remove References in Device Profiles
+            Database.DeviceProfiles
+                .Where(dp => dp.DefaultOrganisationAddress == Id).ToList()
+                .ForEach(dp => dp.DefaultOrganisationAddress = null);
+
             Database.DiscoConfiguration.OrganisationAddresses.RemoveAddress(Id);
             Database.SaveChanges();
 
@@ -242,7 +224,7 @@ namespace Disco.Web.Areas.API.Controllers
             try
             {
                 var result = ActiveDirectory.Context.UpdateSearchAllForestServers(Database, SearchAllForestServers);
-                
+
                 Database.SaveChanges();
 
                 if (!result)
@@ -268,11 +250,24 @@ namespace Disco.Web.Areas.API.Controllers
             }
         }
 
+        [DiscoAuthorize(Claims.Config.System.ConfigureActiveDirectory)]
+        public virtual ActionResult UpdateActiveDirectorySearchWildcardSuffixOnly(bool SearchWildcardSuffixOnly, bool redirect = false)
+        {
+            ActiveDirectory.Context.UpdateWildcardSearchSuffixOnly(Database, SearchWildcardSuffixOnly);
+
+            Database.SaveChanges();
+
+            if (redirect)
+                return RedirectToAction(MVC.Config.SystemConfig.Index());
+            else
+                return Json("OK", JsonRequestBehavior.AllowGet);
+        }
+
         [DiscoAuthorizeAny(Claims.Config.System.ConfigureActiveDirectory, Claims.Config.DeviceProfile.Configure)]
         public virtual ActionResult DomainOrganisationalUnits()
         {
             var domainOUs = ActiveDirectory.RetrieveADOrganisationalUnitStructure()
-                .Select(d => new Models.System.DomainOrganisationalUnitsModel() { Domain = d.Item1, OrganisationalUnits = d.Item2})
+                .Select(d => new Models.System.DomainOrganisationalUnitsModel() { Domain = d.Item1, OrganisationalUnits = d.Item2 })
                 .Select(ous => ous.ToFancyTreeNode()).ToList();
 
             return new JsonResult()
@@ -321,12 +316,12 @@ namespace Disco.Web.Areas.API.Controllers
         public virtual ActionResult SyncActiveDirectoryManagedGroup(string id, string redirectUrl = null)
         {
             ADManagedGroup managedGroup;
-            
+
             if (!ActiveDirectory.Context.ManagedGroups.TryGetValue(id, out managedGroup))
                 throw new ArgumentException("Unknown Managed Group Key");
 
             var taskStatus = ADManagedGroupsSyncTask.ScheduleSync(managedGroup);
-            
+
             if (redirectUrl != null)
                 taskStatus.SetFinishedUrl(redirectUrl);
 

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,8 +30,29 @@ namespace Disco.Models.Repository
         public string DevicesLinkedGroup { get; set; }
         public string UsersLinkedGroup { get; set; }
 
+        public bool IsHidden { get; set; }
+
         [InverseProperty("DocumentTemplates")]
         public virtual IList<JobSubType> JobSubTypes { get; set; }
+
+        [NotMapped]
+        public AttachmentTypes AttachmentType
+        {
+            get
+            {
+                switch (Scope)
+                {
+                    case DocumentTemplateScopes.Device:
+                        return AttachmentTypes.Device;
+                    case DocumentTemplateScopes.Job:
+                        return AttachmentTypes.Job;
+                    case DocumentTemplateScopes.User:
+                        return AttachmentTypes.User;
+                    default:
+                        throw new ArgumentException("Unexpected Document Scope");
+                }
+            }
+        }
 
         public static class DocumentTemplateScopes
         {

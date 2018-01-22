@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Disco.BI;
-using Disco.BI.Extensions;
-using Disco.Data.Repository;
+﻿using Disco.Data.Repository;
+using System;
 
 namespace Disco.Web.Areas.Public.Models.UserHeldDevices
 {
@@ -31,7 +26,7 @@ namespace Disco.Web.Areas.Public.Models.UserHeldDevices
                     ReadyForReturn = this.ReadyForReturn,
                     WaitingForUserAction = this.WaitingForUserAction,
                     DeviceProfileId = this.DeviceProfileId,
-                    DeviceAddress = (this.DeviceAddressId.HasValue ? Database.DiscoConfiguration.OrganisationAddresses.GetAddress(this.DeviceAddressId.Value).ShortName : string.Empty)
+                    DeviceAddress = (this.DeviceAddressId.HasValue ? Database.DiscoConfiguration.OrganisationAddresses.GetAddress(this.DeviceAddressId.Value)?.ShortName : string.Empty)
                 };
             var n = DateTime.Now;
             if (!this.ReadyForReturn && this.EstimatedReturnTime.HasValue && this.EstimatedReturnTime.Value > n)

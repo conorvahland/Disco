@@ -1,5 +1,5 @@
 ﻿using Disco.Models.Repository;
-using Disco.Models.Services.Interop.ActiveDirectory;
+using Disco.Services;
 using Disco.Services.Authorization;
 using Disco.Services.Interop.ActiveDirectory;
 using Disco.Services.Tasks;
@@ -17,8 +17,8 @@ namespace Disco.Web.Areas.API.Controllers
         const string pDescription = "description";
         const string pIcon = "icon";
         const string pIconColour = "iconcolour";
-        const string pAssignedUsersLinkedGroup = "assigneduserslinkedgroup";
-        const string pAssignedUserDevicesLinkedGroup = "assigneduserdeviceslinkedgroup";
+        const string pOnAssignmentExpression = "onassignmentexpression";
+        const string pOnUnassignmentExpression = "onunassignmentexpression";
 
         [DiscoAuthorize(Claims.Config.UserFlag.Configure)]
         public virtual ActionResult Update(int id, string key, string value = null, Nullable<bool> redirect = null)
@@ -48,11 +48,11 @@ namespace Disco.Web.Areas.API.Controllers
                         case pIconColour:
                             UpdateIconColour(flag, value);
                             break;
-                        case pAssignedUsersLinkedGroup:
-                            UpdateAssignedUsersLinkedGroup(flag, value);
+                        case pOnAssignmentExpression:
+                            UpdateOnAssignmentExpression(flag, value);
                             break;
-                        case pAssignedUserDevicesLinkedGroup:
-                            UpdateAssignedUserDevicesLinkedGroup(flag, value);
+                        case pOnUnassignmentExpression:
+                            UpdateOnUnassignmentExpression(flag, value);
                             break;
                         default:
                             throw new Exception("Invalid Update Key");
@@ -132,7 +132,17 @@ namespace Disco.Web.Areas.API.Controllers
             }
         }
         [DiscoAuthorize(Claims.Config.UserFlag.Configure)]
-        public virtual ActionResult UpdateAssignedUsersLinkedGroup(int id, string GroupId = null, bool redirect = false)
+        public virtual ActionResult UpdateOnAssignmentExpression(int id, string OnAssignmentExpression = null, bool redirect = false)
+        {
+            return Update(id, pOnAssignmentExpression, OnAssignmentExpression, redirect);
+        }
+        [DiscoAuthorize(Claims.Config.UserFlag.Configure)]
+        public virtual ActionResult UpdateOnUnassignmentExpression(int id, string OnUnassignmentExpression = null, bool redirect = false)
+        {
+            return Update(id, pOnUnassignmentExpression, OnUnassignmentExpression, redirect);
+        }
+        [DiscoAuthorize(Claims.Config.UserFlag.Configure)]
+        public virtual ActionResult UpdateAssignedUsersLinkedGroup(int id, string GroupId = null, DateTime? FilterBeginDate = null, bool redirect = false)
         {
             try
             {
@@ -144,7 +154,7 @@ namespace Disco.Web.Areas.API.Controllers
                     throw new ArgumentException("Invalid User Flag Id", "id");
 
 
-                var syncTaskStatus = UpdateAssignedUsersLinkedGroup(UserFlag, GroupId);
+                var syncTaskStatus = UpdateAssignedUsersLinkedGroup(UserFlag, GroupId, FilterBeginDate);
                 if (redirect)
                     if (syncTaskStatus == null)
                         return RedirectToAction(MVC.Config.UserFlag.Index(UserFlag.Id));
@@ -165,7 +175,7 @@ namespace Disco.Web.Areas.API.Controllers
             }
         }
         [DiscoAuthorize(Claims.Config.UserFlag.Configure)]
-        public virtual ActionResult UpdateAssignedUserDevicesLinkedGroup(int id, string GroupId = null, bool redirect = false)
+        public virtual ActionResult UpdateAssignedUserDevicesLinkedGroup(int id, string GroupId = null, DateTime? FilterBeginDate = null, bool redirect = false)
         {
             try
             {
@@ -177,7 +187,7 @@ namespace Disco.Web.Areas.API.Controllers
                     throw new ArgumentException("Invalid User Flag Id", "id");
 
 
-                var syncTaskStatus = UpdateAssignedUserDevicesLinkedGroup(UserFlag, GroupId);
+                var syncTaskStatus = UpdateAssignedUserDevicesLinkedGroup(UserFlag, GroupId, FilterBeginDate);
                 if (redirect)
                     if (syncTaskStatus == null)
                         return RedirectToAction(MVC.Config.UserFlag.Index(UserFlag.Id));
@@ -256,9 +266,41 @@ namespace Disco.Web.Areas.API.Controllers
             }
         }
 
-        private ScheduledTaskStatus UpdateAssignedUsersLinkedGroup(UserFlag UserFlag, string AssignedUsersLinkedGroup)
+        private void UpdateOnAssignmentExpression(UserFlag UserFlag, string OnAssignmentExpression)
         {
-            var configJson = ADManagedGroup.ValidConfigurationToJson(UserFlagUsersManagedGroup.GetKey(UserFlag), AssignedUsersLinkedGroup, null);
+            if (string.IsNullOrWhiteSpace(OnAssignmentExpression))
+            {
+                UserFlag.OnAssignmentExpression = null;
+            }
+            else
+            {
+                UserFlag.OnAssignmentExpression = OnAssignmentExpression.Trim();
+            }
+            // Invalidate Cache
+            UserFlag.OnAssignmentExpressionInvalidateCache();
+
+            UserFlagService.Update(Database, UserFlag);
+        }
+
+        private void UpdateOnUnassignmentExpression(UserFlag UserFlag, string OnUnassignmentExpression)
+        {
+            if (string.IsNullOrWhiteSpace(OnUnassignmentExpression))
+            {
+                UserFlag.OnUnassignmentExpression = null;
+            }
+            else
+            {
+                UserFlag.OnUnassignmentExpression = OnUnassignmentExpression.Trim();
+            }
+            // Invalidate Cache
+            UserFlag.OnUnassignmentExpressionInvalidateCache();
+
+            UserFlagService.Update(Database, UserFlag);
+        }
+
+        private ScheduledTaskStatus UpdateAssignedUsersLinkedGroup(UserFlag UserFlag, string AssignedUsersLinkedGroup, DateTime? FilterBeginDate)
+        {
+            var configJson = ADManagedGroup.ValidConfigurationToJson(UserFlagUsersManagedGroup.GetKey(UserFlag), AssignedUsersLinkedGroup, FilterBeginDate);
 
             if (UserFlag.UsersLinkedGroup != configJson)
             {
@@ -278,9 +320,9 @@ namespace Disco.Web.Areas.API.Controllers
 
             return null;
         }
-        private ScheduledTaskStatus UpdateAssignedUserDevicesLinkedGroup(UserFlag UserFlag, string AssignedUserDevicesLinkedGroup)
+        private ScheduledTaskStatus UpdateAssignedUserDevicesLinkedGroup(UserFlag UserFlag, string AssignedUserDevicesLinkedGroup, DateTime? FilterBeginDate)
         {
-            var configJson = ADManagedGroup.ValidConfigurationToJson(UserFlagUserDevicesManagedGroup.GetKey(UserFlag), AssignedUserDevicesLinkedGroup, null);
+            var configJson = ADManagedGroup.ValidConfigurationToJson(UserFlagUserDevicesManagedGroup.GetKey(UserFlag), AssignedUserDevicesLinkedGroup, FilterBeginDate);
 
             if (UserFlag.UserDevicesLinkedGroup != configJson)
             {

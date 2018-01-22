@@ -1,5 +1,4 @@
-﻿using Disco.BI.Extensions;
-using Disco.Models.Services.Jobs.JobLists;
+﻿using Disco.Models.Services.Jobs.JobLists;
 using Disco.Models.UI.User;
 using Disco.Services;
 using Disco.Services.Authorization;
@@ -106,7 +105,10 @@ namespace Disco.Web.Controllers
             }
 
             if (Authorization.Has(Claims.User.Actions.GenerateDocuments))
+            {
                 m.DocumentTemplates = m.User.AvailableDocumentTemplates(Database, UserService.CurrentUser, DateTime.Now);
+                m.DocumentTemplatePackages = m.User.AvailableDocumentTemplatePackages(Database, UserService.CurrentUser);
+            }
 
             // UI Extensions
             UIExtensions.ExecuteExtensions<UserShowModel>(this.ControllerContext, m);

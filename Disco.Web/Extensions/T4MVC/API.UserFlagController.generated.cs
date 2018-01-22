@@ -95,6 +95,18 @@ namespace Disco.Web.Areas.API.Controllers
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult UpdateOnAssignmentExpression()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateOnAssignmentExpression);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.ActionResult UpdateOnUnassignmentExpression()
+        {
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateOnUnassignmentExpression);
+        }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public virtual System.Web.Mvc.ActionResult UpdateAssignedUsersLinkedGroup()
         {
             return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateAssignedUsersLinkedGroup);
@@ -145,6 +157,8 @@ namespace Disco.Web.Areas.API.Controllers
             public readonly string UpdateIcon = "UpdateIcon";
             public readonly string UpdateIconColour = "UpdateIconColour";
             public readonly string UpdateIconAndColour = "UpdateIconAndColour";
+            public readonly string UpdateOnAssignmentExpression = "UpdateOnAssignmentExpression";
+            public readonly string UpdateOnUnassignmentExpression = "UpdateOnUnassignmentExpression";
             public readonly string UpdateAssignedUsersLinkedGroup = "UpdateAssignedUsersLinkedGroup";
             public readonly string UpdateAssignedUserDevicesLinkedGroup = "UpdateAssignedUserDevicesLinkedGroup";
             public readonly string Delete = "Delete";
@@ -161,6 +175,8 @@ namespace Disco.Web.Areas.API.Controllers
             public const string UpdateIcon = "UpdateIcon";
             public const string UpdateIconColour = "UpdateIconColour";
             public const string UpdateIconAndColour = "UpdateIconAndColour";
+            public const string UpdateOnAssignmentExpression = "UpdateOnAssignmentExpression";
+            public const string UpdateOnUnassignmentExpression = "UpdateOnUnassignmentExpression";
             public const string UpdateAssignedUsersLinkedGroup = "UpdateAssignedUsersLinkedGroup";
             public const string UpdateAssignedUserDevicesLinkedGroup = "UpdateAssignedUserDevicesLinkedGroup";
             public const string Delete = "Delete";
@@ -231,6 +247,26 @@ namespace Disco.Web.Areas.API.Controllers
             public readonly string IconColour = "IconColour";
             public readonly string redirect = "redirect";
         }
+        static readonly ActionParamsClass_UpdateOnAssignmentExpression s_params_UpdateOnAssignmentExpression = new ActionParamsClass_UpdateOnAssignmentExpression();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_UpdateOnAssignmentExpression UpdateOnAssignmentExpressionParams { get { return s_params_UpdateOnAssignmentExpression; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_UpdateOnAssignmentExpression
+        {
+            public readonly string id = "id";
+            public readonly string OnAssignmentExpression = "OnAssignmentExpression";
+            public readonly string redirect = "redirect";
+        }
+        static readonly ActionParamsClass_UpdateOnUnassignmentExpression s_params_UpdateOnUnassignmentExpression = new ActionParamsClass_UpdateOnUnassignmentExpression();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_UpdateOnUnassignmentExpression UpdateOnUnassignmentExpressionParams { get { return s_params_UpdateOnUnassignmentExpression; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_UpdateOnUnassignmentExpression
+        {
+            public readonly string id = "id";
+            public readonly string OnUnassignmentExpression = "OnUnassignmentExpression";
+            public readonly string redirect = "redirect";
+        }
         static readonly ActionParamsClass_UpdateAssignedUsersLinkedGroup s_params_UpdateAssignedUsersLinkedGroup = new ActionParamsClass_UpdateAssignedUsersLinkedGroup();
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public ActionParamsClass_UpdateAssignedUsersLinkedGroup UpdateAssignedUsersLinkedGroupParams { get { return s_params_UpdateAssignedUsersLinkedGroup; } }
@@ -239,6 +275,7 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public readonly string id = "id";
             public readonly string GroupId = "GroupId";
+            public readonly string FilterBeginDate = "FilterBeginDate";
             public readonly string redirect = "redirect";
         }
         static readonly ActionParamsClass_UpdateAssignedUserDevicesLinkedGroup s_params_UpdateAssignedUserDevicesLinkedGroup = new ActionParamsClass_UpdateAssignedUserDevicesLinkedGroup();
@@ -249,6 +286,7 @@ namespace Disco.Web.Areas.API.Controllers
         {
             public readonly string id = "id";
             public readonly string GroupId = "GroupId";
+            public readonly string FilterBeginDate = "FilterBeginDate";
             public readonly string redirect = "redirect";
         }
         static readonly ActionParamsClass_Delete s_params_Delete = new ActionParamsClass_Delete();
@@ -385,30 +423,60 @@ namespace Disco.Web.Areas.API.Controllers
         }
 
         [NonAction]
-        partial void UpdateAssignedUsersLinkedGroupOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id, string GroupId, bool redirect);
+        partial void UpdateOnAssignmentExpressionOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id, string OnAssignmentExpression, bool redirect);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult UpdateAssignedUsersLinkedGroup(int id, string GroupId, bool redirect)
+        public override System.Web.Mvc.ActionResult UpdateOnAssignmentExpression(int id, string OnAssignmentExpression, bool redirect)
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateAssignedUsersLinkedGroup);
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateOnAssignmentExpression);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "GroupId", GroupId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "OnAssignmentExpression", OnAssignmentExpression);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
-            UpdateAssignedUsersLinkedGroupOverride(callInfo, id, GroupId, redirect);
+            UpdateOnAssignmentExpressionOverride(callInfo, id, OnAssignmentExpression, redirect);
             return callInfo;
         }
 
         [NonAction]
-        partial void UpdateAssignedUserDevicesLinkedGroupOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id, string GroupId, bool redirect);
+        partial void UpdateOnUnassignmentExpressionOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id, string OnUnassignmentExpression, bool redirect);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult UpdateAssignedUserDevicesLinkedGroup(int id, string GroupId, bool redirect)
+        public override System.Web.Mvc.ActionResult UpdateOnUnassignmentExpression(int id, string OnUnassignmentExpression, bool redirect)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateOnUnassignmentExpression);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "OnUnassignmentExpression", OnUnassignmentExpression);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
+            UpdateOnUnassignmentExpressionOverride(callInfo, id, OnUnassignmentExpression, redirect);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void UpdateAssignedUsersLinkedGroupOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id, string GroupId, System.DateTime? FilterBeginDate, bool redirect);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult UpdateAssignedUsersLinkedGroup(int id, string GroupId, System.DateTime? FilterBeginDate, bool redirect)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateAssignedUsersLinkedGroup);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "GroupId", GroupId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "FilterBeginDate", FilterBeginDate);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
+            UpdateAssignedUsersLinkedGroupOverride(callInfo, id, GroupId, FilterBeginDate, redirect);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void UpdateAssignedUserDevicesLinkedGroupOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id, string GroupId, System.DateTime? FilterBeginDate, bool redirect);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult UpdateAssignedUserDevicesLinkedGroup(int id, string GroupId, System.DateTime? FilterBeginDate, bool redirect)
         {
             var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.UpdateAssignedUserDevicesLinkedGroup);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "GroupId", GroupId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "FilterBeginDate", FilterBeginDate);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "redirect", redirect);
-            UpdateAssignedUserDevicesLinkedGroupOverride(callInfo, id, GroupId, redirect);
+            UpdateAssignedUserDevicesLinkedGroupOverride(callInfo, id, GroupId, FilterBeginDate, redirect);
             return callInfo;
         }
 
